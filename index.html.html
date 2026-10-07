@@ -1,0 +1,3065 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Std 10 Subject & Chapter Manager - GSEB/NCERT</title>
+    <style>
+        :root {
+            --primary-color: #0284c7;
+            --primary-dark: #0369a1;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #334155;
+            --border-color: #cbd5e1;
+            --admin-badge: #7c3aed;
+            --user-badge: #059669;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Top Header Bar */
+        .app-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .app-header .brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-nav-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+        }
+        .badge-admin { background-color: var(--admin-badge); }
+        .badge-user { background-color: var(--user-badge); }
+
+        .btn-header {
+            padding: 7px 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn-manage-users {
+            background-color: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+        .btn-manage-users:hover {
+            background-color: #e2e8f0;
+        }
+        .btn-logout {
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+        .btn-logout:hover {
+            background-color: #fecaca;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 25px auto;
+            padding: 0 20px;
+        }
+
+        h1, h2, h3 {
+            color: #1e293b;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        /* ----------------- LOGIN VIEW ----------------- */
+        #login-view {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 85vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            padding: 35px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .login-card h2 {
+            margin-top: 0;
+            text-align: center;
+            color: var(--primary-dark);
+            font-size: 1.6rem;
+        }
+
+        .login-card p.sub {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        .btn-login-submit {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-login-submit:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Home View - 6 Subjects Grid */
+        #home-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .subject-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .subject-card h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .subject-card p {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        .rename-sub-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #64748b;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .rename-sub-btn:hover {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+        }
+
+        /* Subject View (Chapters List) */
+        #subject-view, #chapter-view {
+            display: none;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            background-color: #64748b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover {
+            background-color: #475569;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .locked-notice {
+            background-color: #fef3c7;
+            color: #b45309;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            border: 1px solid #fde68a;
+        }
+
+        .student-readonly-banner {
+            background-color: #eff6ff;
+            color: #1e40af;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 18px;
+            border: 1px solid #bfdbfe;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Chapter Grid Cards */
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .chapter-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            position: relative;
+        }
+
+        .chapter-card:hover {
+            background: #f1f5f9;
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .chapter-card h4 {
+            margin: 0 0 10px 0;
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+        }
+
+        /* Niyam & Calculator Container */
+        .niyam-container {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .niyam-container h3 {
+            color: var(--primary-dark);
+            margin-top: 0;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .formula-box {
+            background: #ffffff;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 4px;
+        }
+
+        .formula-box h4 {
+            margin: 0 0 5px 0;
+            color: #0f172a;
+        }
+
+        .formula-box p {
+            margin: 0;
+            color: #475569;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        /* Calculator Styles */
+        .calc-box {
+            background: #ffffff;
+            border: 2px solid var(--primary-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .calc-inputs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            align-items: center;
+        }
+
+        .calc-inputs input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 100px;
+            text-align: center;
+        }
+
+        .calc-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .calc-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .calc-results {
+            margin-top: 20px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .calc-results h4 {
+            color: #166534;
+            margin-top: 0;
+        }
+
+        .calc-results p {
+            margin: 8px 0;
+            font-size: 1.05rem;
+            color: #14532d;
+            font-weight: 500;
+        }
+
+        /* Chapter Detail View (PDFs) */
+        .upload-section {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .upload-section input[type="file"] {
+            flex: 1;
+            padding: 8px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        .upload-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .action-btns button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-right: 5px;
+            font-weight: 500;
+        }
+
+        .btn-view { background-color: #0ea5e9; color: white; }
+        .btn-rename { background-color: #eab308; color: white; }
+        .btn-delete { background-color: #ef4444; color: white; }
+
+        .no-data {
+            text-align: center;
+            color: #94a3b8;
+            padding: 20px;
+        }
+
+        /* Modal Styles (For User Management) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 25px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .user-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            align-items: end;
+        }
+
+        .user-form input {
+            padding: 8px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn-add-user {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP HEADER (Only visible after login) -->
+<header id="main-header" class="app-header" style="display: none;">
+    <div class="brand">
+        📚 Std 10 NCERT / GSEB Manager
+    </div>
+    <div class="user-nav-info">
+        <span id="header-user-display" style="font-weight: 600; font-size: 0.95rem;"></span>
+        <span id="header-role-badge" class="user-badge"></span>
+        <button id="btn-open-user-mgmt" class="btn-header btn-manage-users" onclick="openUserMgmtModal()" style="display: none;">
+            👥 Manage Users (યુઝર ઉમેરો)
+        </button>
+        <button class="btn-header btn-logout" onclick="logout()">🚪 Logout (બહાર નીકળો)</button>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- 0. LOGIN VIEW -->
+    <div id="login-view">
+        <div class="login-card">
+            <h2>🔐 વિદ્યાર્થી / એડમિન લૉગિન</h2>
+            <p class="sub">ધોરણ ૧૦ અભ્યાસ સામગ્રી જોવા માટે લૉગિન કરો</p>
+            
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="login-username">👤 વપરાશકર્તા નામ (Username):</label>
+                    <input type="text" id="login-username" required placeholder="દા.ત. student1 અથવા admin">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">🔑 પાસવર્ડ (Password):</label>
+                    <input type="password" id="login-password" required placeholder="તમારો પાસવર્ડ દાખલ કરો">
+                </div>
+                <button type="submit" class="btn-login-submit">🚀 લૉગિન કરો (Login)</button>
+            </form>
+            <p style="text-align:center; margin-top:14px; margin-bottom:0;">
+                <a href="#" onclick="openForgotPasswordModal(); return false;" style="color: var(--primary-color); font-size: 0.9rem; text-decoration:none; font-weight:600;">🔑 પાસવર્ડ ભૂલી ગયા છો? (Forgot Password?)</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <div id="app-content" style="display: none;">
+        <h1>Std 10 Subject & Chapter Manager</h1>
+
+        <!-- 1. HOME VIEW -->
+        <div id="home-view"></div>
+
+        <!-- 2. SUBJECT VIEW -->
+        <div id="subject-view">
+            <button class="back-btn" onclick="goHome()">← Back to Subjects</button>
+            <div class="top-bar">
+                <h2 id="current-subject-title">Subject Name</h2>
+            </div>
+            <div id="notice-container"></div>
+            <div id="chapter-mgmt-container"></div>
+            <h3>Chapters List</h3>
+            <div class="chapters-grid" id="chapters-grid"></div>
+        </div>
+
+        <!-- 3. CHAPTER VIEW -->
+        <div id="chapter-view">
+            <button class="back-btn" onclick="goBackToChapters()">← Back to Chapters</button>
+            <h2 id="current-chapter-title">Chapter Name</h2>
+
+            <div id="dynamic-chapter-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: USER MANAGEMENT (Admin Only) -->
+<div id="user-mgmt-modal" class="modal-overlay">
+    <div class="modal-box">
+        <button class="modal-close-btn" onclick="closeUserMgmtModal()">✕</button>
+        <h2 style="margin-top:0; color: var(--primary-dark);">👥 યુઝર મેનેજમેન્ટ (User Management)</h2>
+        <p style="color: #64748b; font-size: 0.9rem;">અહીંથી તમે નવા વિદ્યાર્થી/યુઝર બનાવી શકો છો જે માત્ર PDF જોઈ શકશે અને ટૂલ્સ વાપરી શકશે.</p>
+
+        <form id="add-user-form" onsubmit="handleCreateUser(event)">
+            <h4 style="margin: 15px 0 8px 0;">➕ નવો યુઝર ઉમેરો:</h4>
+            <div class="user-form">
+                <div>
+                    <label style="font-size: 0.8rem; font-weight:600;">વિદ્યાર્થી નામ (Full Name)</label>
+                    <input type="text" id="new-user-fullname" required placeholder="દા.ત. રમેશભાઈ">
+                </div>
+                <div>
+                    <label style="font-size: 0.8rem; font-weight:600;">Username</label>
+                    <input type="text" id="new-user-name" required placeholder="username">
+                </div>
+                <div>
+                    <label style="font-size: 0.8rem; font-weight:600;">Password</label>
+                    <input type="password" id="new-user-password" required placeholder="password">
+                </div>
+                <div>
+                    <button type="submit" class="btn-add-user">ઉમેરો</button>
+                </div>
+            </div>
+        </form>
+
+        <h4 style="margin: 20px 0 10px 0;">📋 હાજર યુઝર્સની યાદી:</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>નામ (Name)</th>
+                    <th>યુઝરનેમ (Username)</th>
+                    <th>રોલ (Role)</th>
+                    <th>ક્રિયા (Action)</th>
+                </tr>
+            </thead>
+            <tbody id="users-table-body"></tbody>
+        </table>
+
+        <hr style="margin: 25px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+        <h4 style="margin: 0 0 8px 0;">🔑 મારો પાસવર્ડ / સુરક્ષા પ્રશ્ન બદલો (Change My Password &amp; Security Question)</h4>
+        <p style="color:#64748b; font-size:0.85rem; margin-top:0;">સુરક્ષા પ્રશ્ન સેટ કરેલો હશે તો "પાસવર્ડ ભૂલી ગયા છો?" દ્વારા સરળતાથી પાસવર્ડ પાછો મેળવી શકાશે — બ્રાઉઝર console ની જરૂર નહીં પડે.</p>
+        <form id="change-password-form" onsubmit="handleChangePassword(event)" style="background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0;">
+            <div class="form-group">
+                <label>હાલનો પાસવર્ડ (Current Password):</label>
+                <input type="password" id="cp-current-password" required placeholder="હાલનો પાસવર્ડ દાખલ કરો">
+            </div>
+            <div class="form-group">
+                <label>નવો પાસવર્ડ (New Password) - ખાલી રાખો જો બદલવો ના હોય:</label>
+                <input type="password" id="cp-new-password" placeholder="નવો પાસવર્ડ (વૈકલ્પિક)">
+            </div>
+            <div class="form-group">
+                <label>સુરક્ષા પ્રશ્ન (Security Question):</label>
+                <input type="text" id="cp-security-question" placeholder="દા.ત. તમારા પ્રિય શિક્ષકનું નામ શું છે?">
+            </div>
+            <div class="form-group">
+                <label>સુરક્ષા પ્રશ્નનો જવાબ (Security Answer):</label>
+                <input type="text" id="cp-security-answer" placeholder="જવાબ યાદ રાખવા યોગ્ય લખો">
+            </div>
+            <button type="submit" class="btn-add-user" style="width:100%;">💾 સેવ કરો (Save Changes)</button>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: FORGOT PASSWORD -->
+<div id="forgot-password-modal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 480px;">
+        <button class="modal-close-btn" onclick="closeForgotPasswordModal()">✕</button>
+        <h2 style="margin-top:0; color: var(--primary-dark);">🔑 પાસવર્ડ ભૂલી ગયા છો?</h2>
+
+        <div id="fp-step1">
+            <p style="color:#64748b; font-size:0.9rem;">Username દાખલ કરો — તમારો પાસવર્ડ સીધો જ બતાવવામાં આવશે:</p>
+            <div class="form-group">
+                <input type="text" id="fp-username" placeholder="Username (દા.ત. admin)">
+            </div>
+            <button class="btn-login-submit" onclick="forgotPasswordFindUser()">🔍 પાસવર્ડ બતાવો (Show Password)</button>
+        </div>
+
+        <div id="fp-step2" style="display:none;">
+            <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:14px; text-align:center; margin-bottom:16px;">
+                <p style="margin:0 0 4px 0; color:#64748b; font-size:0.85rem;" id="fp-result-name"></p>
+                <p style="margin:0; font-size:1rem;">પાસવર્ડ: <b id="fp-result-password" style="font-size:1.15rem; color:#14532d;"></b></p>
+            </div>
+
+            <p style="color:#64748b; font-size:0.85rem; margin-bottom:5px;">ઈચ્છો તો અહીંથી નવો પાસવર્ડ પણ સેટ કરી શકો છો (વૈકલ્પિક):</p>
+            <div class="form-group">
+                <label>નવો પાસવર્ડ (New Password):</label>
+                <input type="password" id="fp-new-password">
+            </div>
+            <div class="form-group">
+                <label>નવો પાસવર્ડ ફરી લખો (Confirm New Password):</label>
+                <input type="password" id="fp-confirm-password">
+            </div>
+            <button class="btn-login-submit" onclick="forgotPasswordReset()">🔓 નવો પાસવર્ડ સેવ કરો</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ===== ENGLISH GRAMMAR TOOLS (rule based; refuses when unsure instead of guessing) ===== */
+const GR = (function () {
+  const IRR = {};
+  ("arise arose arisen;bear bore borne;beat beat beaten;become became become;begin began begun;bend bent bent;bite bit bitten;blow blew blown;break broke broken;bring brought brought;build built built;burn burned burned;buy bought bought;catch caught caught;choose chose chosen;come came come;cost cost cost;cut cut cut;deal dealt dealt;dig dug dug;do did done;draw drew drawn;drink drank drunk;drive drove driven;eat ate eaten;fall fell fallen;feed fed fed;feel felt felt;fight fought fought;find found found;fly flew flown;forget forgot forgotten;forgive forgave forgiven;freeze froze frozen;get got got;give gave given;go went gone;grow grew grown;hang hung hung;have had had;hear heard heard;hide hid hidden;hit hit hit;hold held held;hurt hurt hurt;keep kept kept;know knew known;lay laid laid;lead led led;learn learned learned;leave left left;lend lent lent;let let let;lose lost lost;make made made;mean meant meant;meet met met;pay paid paid;put put put;read read read;ride rode ridden;ring rang rung;rise rose risen;run ran run;say said said;see saw seen;sell sold sold;send sent sent;set set set;shake shook shaken;shine shone shone;shoot shot shot;show showed shown;shut shut shut;sing sang sung;sink sank sunk;sit sat sat;sleep slept slept;speak spoke spoken;spend spent spent;stand stood stood;steal stole stolen;strike struck struck;swim swam swum;take took taken;teach taught taught;tear tore torn;tell told told;think thought thought;throw threw thrown;understand understood understood;wake woke woken;wear wore worn;win won won;write wrote written")
+    .split(";").forEach(s => { const p = s.split(" "); IRR[p[0]] = { p: p[1], pp: p[2] }; });
+  const REG = ("open close clean cook paint wash help love like hate want need call ask answer watch visit play use invite carry cover cross destroy kill finish start end follow join pass reach save serve solve thank touch turn live work walk talk stay arrive wait smile laugh cry jump look listen enjoy offer order obey praise punish prepare repair remember wish hope believe decide discuss explain miss mix move notice plan rain pull push post produce promise protect receive remove reply return respect rob search select share stop study suggest support surprise tease trust try type wipe wonder worry wrap rescue appoint arrest admire accept add allow announce apologise bake beg borrow brush build? check chase clap climb collect complete construct copy count cut? damage dance deliver describe discover dress drop dry earn fill fix fold guide hunt imagine improve inform insult introduce kick kiss knock lift lock mail mark marry measure mention name nurse obey operate pack park pick pour practise pray prefer print publish punish rent repeat request rub scold scratch seem shout smell sound spoil steal? sweep switch taste tie tie tour train translate travel treat tie unlock vote warn weigh welcome whisper wonder write? admit permit occur refer reply cheat cheer waste march plough harvest hire bury burn? lose? attack beat? break? defeat feed? fetch greet hurry invent kick lend? light? paint plant pray pull shave smoke spread? taste tell? tie teach? wake? win? wash water? accompany adopt avoid bless bother celebrate chase choose? contact cure decorate deny draw? educate elect examine exchange expect fail fasten gather hate hug irritate judge kill lead? lift? lock manage neglect nominate observe paste persuade pity polish possess prove pronounce pursue quit raise recite recognise refuse relieve reject sail satisfy scare seal shock ski slap smash spread? stir stretch suffer supply tackle tempt thrill unite upset visit warn wound yell".split(" ")).filter(w => !/[?]/.test(w));
+  const DBL = new Set("stop plan drop rob admit permit prefer occur refer clap beg tap nod hug trip".split(" "));
+  const ownIRR = k => Object.prototype.hasOwnProperty.call(IRR, k);
+  const pastOf = b => ownIRR(b) ? IRR[b].p : b.endsWith("e") ? b + "d" : /[^aeiou]y$/.test(b) ? b.slice(0, -1) + "ied" : DBL.has(b) ? b + b.slice(-1) + "ed" : b + "ed";
+  const ppOf = b => ownIRR(b) ? IRR[b].pp : pastOf(b);
+  const sOf = b => b === "have" ? "has" : /(s|x|z|ch|sh|o)$/.test(b) ? b + "es" : /[^aeiou]y$/.test(b) ? b.slice(0, -1) + "ies" : b + "s";
+  const ingOf = b => b === "be" ? "being" : b.endsWith("ie") ? b.slice(0, -2) + "ying" : /[^eyo]e$/.test(b) ? b.slice(0, -1) + "ing" : DBL.has(b) ? b + b.slice(-1) + "ing" : b + "ing";
+  const BASES = Array.from(new Set(Object.keys(IRR).concat(REG)));
+  const FORMS = {};
+  const addF = (w, b, t) => { (FORMS[w] = FORMS[w] || []).push({ b, t }); };
+  BASES.forEach(b => { addF(b, b, "base"); addF(sOf(b), b, "s"); addF(pastOf(b), b, "past"); addF(ppOf(b), b, "pp"); addF(ingOf(b), b, "ing"); });
+  const finf = w => Object.prototype.hasOwnProperty.call(FORMS, w) ? FORMS[w] : null;
+  const isBase = w => { const f = finf(w); return !!f && f.some(x => x.t === "base"); };
+  const isPP = w => { const f = finf(w); return !!f && f.some(x => x.t === "pp"); };
+  const isING = w => { const f = finf(w); return !!f && f.some(x => x.t === "ing"); };
+  const baseOfAny = w => { const f = finf(w); return f ? f[0].b : null; };
+
+  const S = x => new Set(x.split(" "));
+  const MOD = S("can could may might must shall should will would");
+  const BEF = S("am is are was were");
+  const HAVEF = S("have has had");
+  const DOF = S("do does did");
+  const AUXALL = new Set([...MOD, ...BEF, ...HAVEF, ...DOF]);
+  const ADV = S("always never often usually sometimes generally daily already just ever hardly seldom rarely also still");
+  const DET = S("the a an my your his her our their its this that these those some every each any no another many few several all both one two three four five six seven eight nine ten");
+  const ADJ = S("old young big small little good bad new tall short long beautiful poor rich brave kind clever lazy honest strong weak fat thin hungry angry happy sad famous great naughty wise foolish red blue green white black");
+  const PREP = S("to in on at for with from by into under over about before after during through near behind across against between without towards");
+  const WH = S("who whom whose which what when where why how");
+  const SUBJP = S("i you he she it we they");
+  const OBJP = { i: "me", he: "him", she: "her", we: "us", they: "them", you: "you", it: "it" };
+  const SUBP = { me: "I", him: "he", her: "she", us: "we", them: "they", you: "you", it: "it" };
+  const PLURALP = S("we they you these those");
+  const IRRPL = S("people children men women police cattle teeth feet mice geese");
+  const SGS = S("news mathematics physics economics politics athletics bus gas series species");
+  const NAMES = S("ram sita mohan geeta gita rama hari krishna raj rahul rohan amit ajay vijay sanjay anil sunil suresh ramesh mahesh dinesh naitik nitin priya riya pooja neha kavita sunita anita rekha meera mira radha lata asha usha nisha komal heena hetal jignesh kiran jay dev arjun karan john mary david peter paul tom anna james robert sam alice india delhi mumbai gujarat surat ahmedabad america england china japan pakistan nepal ganga yamuna himalaya gandhi nehru tagore");
+  const FEM = S("sita geeta gita rama radha lata asha usha nisha komal heena hetal meera mira priya riya pooja neha kavita sunita anita rekha mary anna alice");
+  const FEMN = S("mother sister aunt girl woman lady madam daughter wife queen grandmother");
+  const MASN = S("father brother uncle boy man gentleman sir son husband king grandfather");
+  const NOUNS = S("boy girl man woman child teacher student mother father brother sister friend farmer doctor driver king queen cat dog bird tiger lion cow book letter door window ball cake food rice milk tea coffee water house car bus bike lesson song story poem game match work homework exam test question answer thief police people children men women dog cats dogs parents priest worker workers servant peon clerk officer soldier captain boys girls");
+  const FUNCW = new Set([...DET, ...ADV, ...WH, ...AUXALL, ...SUBJP, ...S("there here if when because while after before so but and or not please let nobody someone somebody everyone everybody nothing something everything no one")]);
+  const DIT = S("give send tell show teach offer lend bring pay sell");
+  const NOPASS = S("have resemble lack suit fit become cost");
+  const NOUNLIKE = S("this that these those"); void NOUNLIKE;
+
+  class Fail extends Error {}
+  const fail = m => { throw new Fail(m); };
+  const lc = w => w.toLowerCase();
+  const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+  const isCapName = (t, i) => NAMES.has(lc(t)) || (i > 0 && /^[A-Z]/.test(t) && t !== "I");
+  function lowerFirst(arr) { // arr: sentence-initial tokens
+    if (!arr.length) return arr;
+    const a = arr.slice(), w = a[0], l = lc(w);
+    const common = FUNCW.has(l) || NOUNS.has(l) || (l.endsWith("s") && NOUNS.has(l.slice(0, -1))) || (l.endsWith("es") && NOUNS.has(l.slice(0, -2))) || finf(l) || ADJ.has(l);
+    if (w !== "I" && !NAMES.has(l) && common) a[0] = l;
+    return a;
+  }
+  const norm = s => s.replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, " ").trim();
+  function expand(s) {
+    s = s.replace(/\bcan't\b/gi, "can not").replace(/\bcannot\b/gi, "can not").replace(/\bwon't\b/gi, "will not").replace(/\bshan't\b/gi, "shall not").replace(/\bain't\b/gi, () => fail("Please write the full form instead of \"ain't\"."));
+    s = s.replace(/\b(\w+)n't\b/gi, "$1 not");
+    s = s.replace(/\bI'm\b/g, "I am").replace(/\b(you|we|they)'re\b/gi, "$1 are").replace(/\b(I|you|we|they)'ve\b/gi, "$1 have").replace(/\b(I|you|he|she|it|we|they)'ll\b/gi, "$1 will").replace(/\blet's\b/gi, "let us");
+    s = s.replace(/\b(I|you|he|she|it|we|they)'d\b/gi, () => fail("\"'d\" can mean \"had\" or \"would\". Please write the full form."));
+    s = s.replace(/\b(he|she|it|that|what|there|here|who|where|how|when)'s(\s+)(\w+)/gi, (m, a, sp, nx) => {
+      const n = lc(nx);
+      if (isING(n) || DET.has(n) || ADJ.has(n) || n === "not" || n === "a") return a + " is" + sp + nx;
+      if (isPP(n) && ownIRR(baseOfAny(n)) && IRR[baseOfAny(n)].pp === n) return a + " has" + sp + nx;
+      return fail("Please write \"" + a + " is\" or \"" + a + " has\" in full instead of \"" + a + "'s\".");
+    });
+    return s;
+  }
+  const tokenize = s => s.match(/[A-Za-z0-9]+(?:['\-][A-Za-z0-9]+)*|[.,!?;:]/g) || [];
+  const join = a => a.join(" ").replace(/ ([,.!?;:])/g, "$1").replace(/\bcan not\b/g, "cannot").replace(/\s+/g, " ").trim();
+
+  /* ---- noun-phrase helpers ---- */
+  function takeSubject(t, i) { // returns end index (exclusive) of a subject NP starting at i
+    const l = lc(t[i] || "");
+    if (!l) return i;
+    let j = i;
+    if (SUBJP.has(l) || NAMES.has(l) || (j > 0 && /^[A-Z]/.test(t[j]))) j++;
+    else {
+      if (DET.has(l)) j++;
+      while (j < t.length && ADJ.has(lc(t[j])) && j + 1 < t.length) j++;
+      if (j < t.length) j++;
+    }
+    if (j + 1 < t.length && lc(t[j]) === "of") return takeSubject(t, j + 1);
+    if (j + 1 < t.length && lc(t[j]) === "and") return takeSubject(t, j + 1);
+    return j;
+  }
+  function plural(np) {
+    const l = np.map(lc);
+    if (l.length === 1 && l[0] === "i") return false;
+    if (l.includes("and")) return true;
+    let head = l;
+    const k = l.indexOf("of"); if (k > 0) head = l.slice(0, k);
+    const h = head[head.length - 1];
+    if (head.length === 2 && DET.has(head[0]) && ADJ.has(h) && head[0] === "the") return true;
+    if (PLURALP.has(h) && head.length === 1) return true;
+    if (IRRPL.has(h)) return true;
+    if (SGS.has(h)) return false;
+    if (head.length > 1 && ["these", "those"].includes(head[0])) return true;
+    return /[^su']s$/.test(h) && !/(ss|us|is)$/.test(h) || /(ses|xes|ches|shes)$/.test(h);
+  }
+  const beForm = (np, past) => { const l = np.map(lc); if (l.length === 1 && l[0] === "i") return past ? "was" : "am"; if (l.length === 1 && l[0] === "you") return past ? "were" : "are"; return plural(np) ? (past ? "were" : "are") : (past ? "was" : "is"); };
+
+  /* ========== ACTIVE -> PASSIVE ========== */
+  function parseVG(t, v) { // t = tokens; v = index of first verb/aux. returns {kind, end, neg, adv, vb, aux, pp, past}
+    const l = t.map(lc);
+    let i = v, adv = [], neg = false;
+    const skipAdv = () => { while (i < l.length && ADV.has(l[i])) adv.push(t[i++]); };
+    const skipNot = () => { if (l[i] === "not") { neg = true; i++; } };
+    const w = l[i];
+    const need = (cond, m) => { if (!cond) fail(m); };
+    if (BEF.has(w)) {
+      const past = w === "was" || w === "were"; i++; skipNot(); skipAdv();
+      if (l[i] === "going" && l[i + 1] === "to" && isBase(l[i + 2] || "")) { return { kind: "goingto", past, end: i + 3, neg, adv, vb: baseOfAny(l[i + 2]) }; }
+      need(i < l.length && isING(l[i]) && !isPP(l[i]) || (i < l.length && isING(l[i])), "This sentence has no clear active verb (it may already be passive, or it uses \"to be\" as the main verb).");
+      return { kind: "cont", past, end: i + 1, neg, adv, vb: finf(l[i]).find(x => x.t === "ing").b };
+    }
+    if (HAVEF.has(w)) {
+      const past = w === "had"; i++; skipNot(); skipAdv();
+      need(l[i] !== "been", "Perfect-continuous / already passive sentences are not supported.");
+      need(i < l.length && isPP(l[i]) && !isBase(l[i]) || (i < l.length && isPP(l[i]) && l[i] !== "have"), "\"" + w + "\" is used as a main verb here (possession) - such sentences cannot be made passive.");
+      return { kind: "perf", past, hv: w, end: i + 1, neg, adv, vb: finf(l[i]).find(x => x.t === "pp").b };
+    }
+    if (DOF.has(w)) {
+      const past = w === "did"; i++; skipNot(); skipAdv();
+      need(i < l.length && isBase(l[i]), "Could not find the main verb after \"" + w + "\".");
+      return { kind: "simple", past, end: i + 1, neg, adv, vb: l[i] };
+    }
+    if (MOD.has(w)) {
+      i++; skipNot(); skipAdv();
+      if (l[i] === "have" && i + 1 < l.length && isPP(l[i + 1])) { return { kind: "modperf", mod: w, end: i + 2, neg, adv, vb: finf(l[i + 1]).find(x => x.t === "pp").b }; }
+      if (l[i] === "be") fail("This sentence is already passive or has a different structure.");
+      need(i < l.length && isBase(l[i]), "Could not find the main verb after \"" + w + "\".");
+      if (w === "will" || w === "shall") {
+        if (l[i] === "have") fail("Unsupported structure.");
+      }
+      return { kind: "mod", mod: w, end: i + 1, neg, adv, vb: l[i] };
+    }
+    // simple tense, single verb
+    const f = finf(w);
+    need(!!f, "I do not know the verb \"" + t[i] + "\" yet. Please try a common verb.");
+    const hasPastMarker = l.some(x => ["yesterday", "ago", "last"].includes(x)) || l.some(x => /^(19|20)\d\d$/.test(x));
+    const bt = f.find(x => x.t === "past" && !f.some(y => y.t === "base" || y.t === "s")) ? "past" : (f.find(x => x.t === "s") ? "pres" : (f.find(x => x.t === "base") ? (f.find(x => x.t === "past") && hasPastMarker ? "past" : "pres") : "past"));
+    const tense = bt;
+    const ent = tense === "past" ? (f.find(x => x.t === "past") || f[0]) : (f.find(x => x.t === "s") || f.find(x => x.t === "base") || f[0]);
+    let vb = ent.b;
+    // "He plays" -> s form; "I play" -> base: both pres
+    return { kind: "simple", past: tense === "past", end: i + 1, neg: false, adv: [], vb, bare: true };
+  }
+
+  function findVerbIndex(t) {
+    const l = t.map(lc);
+    let prevVerb = false;
+    for (let j = 1; j < l.length; j++) {
+      const w = l[j];
+      const isV = AUXALL.has(w) || (finf(w) && !isING(w) || false) && (isBase(w) || finf(w).some(x => x.t === "s" || x.t === "past"));
+      if (!isV) continue;
+      if (DET.has(l[j - 1]) || ADJ.has(l[j - 1]) && j - 1 > 0 && DET.has(l[j - 2])) continue;
+      if (j > 0 && lc(t[j - 1]) === "to") continue;
+      return j;
+    }
+    return -1;
+  }
+
+  function sentenceCore(t, mode) {
+    // t: tokens of a *statement* (subject first). mode.imperative handled elsewhere
+    const l = t.map(lc);
+    const SUBTAG = ["because", "that", "if", "when", "while", "although", "but", "which", "so", "than", "unless", "until", "since", "or"].concat(mode.allowWho ? [] : ["who", "whom"]);
+    if (l.some(x => SUBTAG.includes(x))) fail("Please enter a simple sentence with only one clause (no because / that / if / but ...).");
+    if (l.some(x => /^[,;:]$/.test(x))) fail("Please enter a simple sentence without commas.");
+    const v = mode.subjLen != null ? mode.subjLen : findVerbIndex(t);
+    if (v < 1) fail("I could not find the subject and a known verb in this sentence. Please check the spelling or use a common verb.");
+    let subj = t.slice(0, v), subjAdv = [];
+    while (subj.length > 1 && ADV.has(lc(subj[subj.length - 1]))) subjAdv.unshift(subj.pop());
+    if (subj.length > 6) fail("The subject looks too long for me to analyse safely.");
+    const vg = parseVG(t, v);
+    vg.adv = subjAdv.concat(vg.adv);
+    if (NOPASS.has(vg.vb)) fail("The verb \"" + vg.vb + "\" does not take a passive form here.");
+    let rest = t.slice(vg.end), restL = rest.map(lc);
+    if (!rest.length) fail("There is no object, so this sentence cannot be changed to the passive voice (intransitive verb).");
+    if (restL.some(x => /self$|selves$/.test(x))) fail("Sentences with reflexive pronouns (myself, himself ...) cannot be made passive.");
+    if (["to", "that", "not"].includes(restL[0]) || isING(restL[0]) && restL.length === 1) fail("The verb has no direct object here.");
+    let timeTail = [];
+    const TA = ["yesterday", "today", "tomorrow", "tonight", "now", "daily", "again", "everyday"];
+    while (rest.length > 1 && (TA.includes(lc(rest[rest.length - 1])) || (rest.length > 2 && ["last", "next", "every"].includes(lc(rest[rest.length - 2])) && ["night", "week", "month", "year", "day", "morning", "evening"].includes(lc(rest[rest.length - 1]))))) {
+      const n = TA.includes(lc(rest[rest.length - 1])) ? 1 : 2; timeTail = rest.slice(rest.length - n).concat(timeTail); rest = rest.slice(0, rest.length - n);
+    }
+    restL = rest.map(lc);
+    let k = restL.findIndex((x, i) => i > 0 && PREP.has(x) && x !== "of");
+    let obj = k < 0 ? rest : rest.slice(0, k), tail = k < 0 ? [] : rest.slice(k), keep = [];
+    if (!obj.length) fail("Could not find the object.");
+    let objL = obj.map(lc);
+    // double-object verbs
+    if (DIT.has(vg.vb) && obj.length > 1) {
+      if (["me", "him", "us", "them", "you"].includes(objL[0])) { obj = obj.slice(0); }
+      else if (objL.slice(1).some((x, i) => DET.has(x) && !["of", "and"].includes(objL[i]))) fail("This verb has two objects (indirect and direct). Please keep only one object, e.g. \"He gave a book.\"");
+    }
+    // object -> new subject
+    let newSubj, newSubjNP;
+    if (DIT.has(vg.vb) && ["me", "him", "us", "them", "you"].includes(objL[0]) && obj.length > 1) {
+      newSubj = [SUBP[objL[0]]]; newSubjNP = newSubj; keep = obj.slice(1);
+    } else if (obj.length === 1 && SUBP[objL[0]] && !(objL[0] === "her" && false)) {
+      newSubj = [SUBP[objL[0]]]; newSubjNP = newSubj;
+    } else { newSubj = obj.slice(); if (!isCapName(newSubj[0], 0)) newSubj[0] = newSubj[0]; newSubjNP = newSubj; }
+    if (obj.length > 1 && objL[0] === "her" && obj.length === 1) newSubj = ["she"];
+    newSubj = newSubj.slice(); newSubj[0] = newSubj[0] === "i" ? "I" : newSubj[0];
+    // agent
+    let agent, subjL = subj.map(lc), negSubj = false;
+    if (subj.length === 1 && OBJP[subjL[0]]) agent = [OBJP[subjL[0]]];
+    else if (["nobody", "no one"].includes(subjL.join(" "))) { agent = ["anyone"]; negSubj = true; }
+    else agent = lowerFirst(subj);
+    if (subj.length === 1 && ["nobody"].includes(subjL[0])) { agent = ["anyone"]; negSubj = true; }
+    const neg = vg.neg || negSubj;
+    const beP = beForm(newSubjNP, vg.past), beC = beForm(newSubjNP, vg.past);
+    const pp = ppOf(vg.vb);
+    const nt = neg ? ["not"] : [];
+    let vp; // verb phrase words, vp[0] = first auxiliary
+    const adv = vg.adv.map(lc);
+    switch (vg.kind) {
+      case "simple": vp = [beP].concat(nt, adv, [pp]); break;
+      case "cont": vp = [beC].concat(nt, adv, ["being", pp]); break;
+      case "perf": { const h = vg.hv === "had" ? "had" : (plural(newSubjNP) || beForm(newSubjNP, false) === "am" || beForm(newSubjNP, false) === "are" ? "have" : "has"); vp = [h].concat(nt, adv, ["been", pp]); break; }
+      case "mod": vp = [vg.mod].concat(nt, adv, ["be", pp]); break;
+      case "modperf": vp = [vg.mod].concat(nt, adv, ["have", "been", pp]); break;
+      case "goingto": vp = [beForm(newSubjNP, vg.past)].concat(nt, adv, ["going to be", pp]); break;
+    }
+    if (vg.kind === "perf" && vg.hv !== "had") { vp[0] = (plural(newSubjNP) || ["I", "you", "we", "they"].includes(newSubj[0])) ? "have" : "has"; }
+    if (vg.kind === "simple" && mode.simpleNeg) { /* handled in vg.neg */ }
+    return { newSubj, vp, agent, tail: tail.concat(timeTail), keep, vg, subj, obj };
+  }
+
+  function passiveStatement(t, endCh) {
+    const c = sentenceCore(t, {});
+    const out = [].concat(c.newSubj, c.vp, c.keep, ["by"], c.agent);
+    if (c.agent[0] === "anyone" && c.agent.length === 1) { /* no one -> by anyone */ }
+    const tail = c.tail;
+    return { text: cap(join(out.concat(tail))) + ".", info: info(c) };
+  }
+  const info = c => ({ subject: c.subj.join(" "), verb: c.vg.vb + " (" + ({ simple: c.vg.past ? "simple past" : "simple present", cont: c.vg.past ? "past continuous" : "present continuous", perf: c.vg.hv === "had" ? "past perfect" : "present perfect", mod: "modal (" + c.vg.mod + ")", modperf: "modal perfect", goingto: "going to" })[c.vg.kind] + ")", object: c.obj.join(" ") });
+
+  function passiveQuestion(t) {
+    const l = t.map(lc), a = l[0];
+    let rest = t.slice(1);
+    if (l.includes("not") || l.includes("n't")) fail("Negative questions are not supported.");
+    if (l.some(x => ["because", "that", "if", "when", "while", "and", "but", "or"].includes(x))) fail("Please enter a simple question with one clause.");
+    const e = takeSubject(rest, 0);
+    if (e < 1 || e >= rest.length) fail("I could not find the subject and verb of this question.");
+    const subj = rest.slice(0, e), after = rest.slice(e);
+    let st;
+    if (DOF.has(a)) {
+      if (!isBase(lc(after[0]))) fail("Could not find the main verb.");
+      st = subj.concat([a], after);
+    } else st = subj.concat([a], after);
+    const c = sentenceCore(st, { subjLen: subj.length });
+    const vp = c.vp, first = vp[0];
+    const out = [first].concat(c.newSubj, vp.slice(1), c.keep, ["by"], c.agent, c.tail);
+    return { text: cap(join(out)) + "?", info: info(c) };
+  }
+
+  function passiveWh(t) {
+    const l = t.map(lc), w = l[0];
+    if (l.some(x => ["because", "that", "if", "when", "and", "but", "or"].includes(x))) fail("Please enter a simple question with one clause.");
+    if (w === "who") {
+      const c = sentenceCore(["who"].concat(t.slice(1)), { subjLen: 1, allowWho: true });
+      const out = ["by whom", c.vp[0]].concat(c.newSubj, c.vp.slice(1), c.keep, c.tail);
+      return { text: cap(join(out)) + "?", info: info(c) };
+    }
+    if (w === "what" || w === "whom") {
+      const a = l[1];
+      if (!AUXALL.has(a) || BEF.has(a)) fail("This type of question is not supported. Try: \"What did you buy?\" or \"Who wrote this letter?\"");
+      const e = takeSubject(t, 2);
+      if (e <= 2 || e >= t.length) fail("I could not find the subject of this question.");
+      const subj = t.slice(2, e);
+      const st = subj.concat([a], t.slice(e));
+      // object is the wh-word
+      const probe = st.concat(["x"]);
+      const c0 = sentenceCore(probe, { subjLen: subj.length });
+      const be = c0.vp[0], restVP = c0.vp.slice(1);
+      let first = be;
+      if (c0.vg.kind === "perf") first = c0.vg.hv === "had" ? "had" : "has";
+      if (c0.vg.kind === "cont" || c0.vg.kind === "simple" || c0.vg.kind === "goingto") first = c0.vg.past ? "was" : "is";
+      const vp = c0.vp.slice(); vp[0] = first;
+      const head = w === "what" ? "what" : "who";
+      const out = [head].concat(vp, ["by"], c0.agent);
+      return { text: cap(join(out)) + "?", info: info(c0) };
+    }
+    fail("This type of question is not supported. Try yes/no questions, \"Who ...?\" and \"What did you ...?\"");
+  }
+
+  function passiveImperative(t) {
+    let l = t.map(lc), neg = false, please = false;
+    if (l[0] === "please") { please = true; t = t.slice(1); l = l.slice(1); }
+    if (l[0] === "do" && l[1] === "not") { neg = true; t = t.slice(2); l = l.slice(2); }
+    else if (l[0] === "never") { neg = true; t = t.slice(1); l = l.slice(1); }
+    if (!l.length || !isBase(l[0])) fail("Could not understand the command.");
+    const vb = baseOfAny(l[0]);
+    if (NOPASS.has(vb)) fail("This verb does not take a passive form here.");
+    if (l.some(x => ["and", "but", "or", "that", "if", "because", ","].includes(x))) fail("Please enter a simple command with one verb.");
+    let rest = t.slice(1);
+    const k = rest.findIndex((x, i) => i > 0 && PREP.has(lc(x)) && lc(x) !== "of");
+    const obj = k < 0 ? rest : rest.slice(0, k), tail = k < 0 ? [] : rest.slice(k);
+    if (!obj.length || ["to"].includes(lc(obj[0]))) fail("There is no object, so a passive form is not possible.");
+    if (obj.some(x => /self$|selves$/.test(lc(x)))) fail("Reflexive pronouns cannot be used here.");
+    const out = ["let"].concat(obj, neg ? ["not"] : [], ["be", ppOf(vb)], tail, please ? [", please"] : []);
+    return { text: cap(join(out).replace(" , please", ", please")) + ".", info: { subject: "(you)", verb: vb + " (imperative)", object: obj.join(" ") } };
+  }
+
+  function toPassive(input) {
+    try {
+      let s = norm(input);
+      if (!s) fail("Please type a sentence.");
+      if (/["]/.test(s)) fail("This looks like direct speech. Use the Direct → Indirect box.");
+      s = expand(s);
+      const endCh = (s.match(/[.?!]+$/) || [""])[0];
+      const t = tokenize(s.replace(/[.?!]+$/, ""));
+      if (t.length < 2) fail("Please type a complete sentence.");
+      const l = t.map(lc);
+      // already passive?
+      const passPat = l.findIndex((x, i) => BEF.has(x) && i + 1 < l.length && isPP(l[i + 1]) && !isING(l[i + 1]) && (l[i + 2] === "by" || i + 2 >= l.length));
+      if (passPat >= 0 && !l.includes("going")) fail("This sentence looks like it is already in the passive voice.");
+      if (endCh.includes("?") || (AUXALL.has(l[0]) && !(l[0] === "do" && l[1] === "not")) || (WH.has(l[0]) && l.length > 2)) {
+        if (WH.has(l[0])) return Object.assign({ ok: true }, passiveWh(t));
+        if (AUXALL.has(l[0])) return Object.assign({ ok: true }, passiveQuestion(t));
+        fail("Questions starting with this word are not supported.");
+      }
+      if (l[0] === "let") fail("Sentences beginning with \"let\" are not supported.");
+      const first = l[0];
+      const isImp = first === "please" || (first === "do" && l[1] === "not") || first === "never" || (isBase(first) && !SUBJP.has(first) && !NAMES.has(first) && !(finf(l[1]) && !DET.has(l[1]) && isVerbForm(l[1]) && false) && findVerbIndex(t) < 0);
+      if (isImp) return Object.assign({ ok: true }, passiveImperative(t));
+      return Object.assign({ ok: true }, passiveStatement(t, endCh));
+    } catch (e) { if (e instanceof Fail) return { ok: false, msg: e.message }; throw e; }
+  }
+  const isVerbForm = w => !!finf(w);
+
+  /* ========== DIRECT -> INDIRECT ========== */
+  const PRN = {
+    I: { s: "I", o: "me", p: "my", pp: "mine", r: "myself" }, we: { s: "we", o: "us", p: "our", pp: "ours", r: "ourselves" },
+    you: { s: "you", o: "you", p: "your", pp: "yours", r: "yourself" }, he: { s: "he", o: "him", p: "his", pp: "his", r: "himself" },
+    she: { s: "she", o: "her", p: "her", pp: "hers", r: "herself" }, they: { s: "they", o: "them", p: "their", pp: "theirs", r: "themselves" },
+    it: { s: "it", o: "it", p: "its", pp: "its", r: "itself" }
+  };
+  const RVERBS = S("say tell ask order request beg advise warn command urge remind reply exclaim cry suggest propose answer shout remark add announce declare whisper inquire wish pray state complain explain");
+  const RVFORMS = {};
+  RVERBS.forEach(b => { RVFORMS[b] = [b, "b"]; RVFORMS[sOf(b)] = [b, "s"]; RVFORMS[pastOf(b)] = [b, "p"]; });
+  RVFORMS["cried"] = ["cry", "p"]; RVFORMS["cries"] = ["cry", "s"]; RVFORMS["said"] = ["say", "p"]; RVFORMS["told"] = ["tell", "p"];
+  const rvForm = (b, k) => b === "say" ? ({ b: "say", s: "says", p: "said" })[k] : b === "tell" ? ({ b: "tell", s: "tells", p: "told" })[k] : b === "cry" ? ({ b: "cry", s: "cries", p: "cried" })[k] : k === "b" ? b : k === "s" ? sOf(b) : pastOf(b);
+  const LISTENER_VERBS = S("tell ask order request beg advise warn command urge remind");
+
+  function personKey(tokens, label) {
+    const a = tokens.map(lc), s = a.join(" ");
+    if (s === "i" || s === "me") return "I";
+    if (s === "we" || s === "us") return "we";
+    if (s === "you") return "you";
+    if (s === "he" || s === "him") return "he";
+    if (s === "she" || s === "her") return "she";
+    if (s === "they" || s === "them") return "they";
+    if (a.includes("and") || plural(tokens)) return "they";
+    const h = a[a.length - 1];
+    if (FEM.has(h) || FEMN.has(h)) return "she";
+    if (NAMES.has(h) || MASN.has(h)) return "he";
+    return null;
+  }
+  function subjectRole(l, i) { // is "you" a subject?
+    const prev = l[i - 1], next = l[i + 1];
+    if (i === 0) return true;
+    if (AUXALL.has(prev) || WH.has(prev) || ["that", "if", "whether", "and", "but", "because", "when", "while", "as", "than", ",", "so"].includes(prev)) return true;
+    if (next && (AUXALL.has(next) || next === "not" || (finf(next) && !isING(next)))) return true;
+    return false;
+  }
+  function agreeBE(subjOut, orig, back) { // choose was/were/am/is/are
+    const x = subjOut;
+    return x;
+  }
+  function shiftClause(t, ctx) {
+    const l = t.map(lc);
+    const R = ctx.R, L = ctx.L, back = ctx.back;
+    skipShift.clear();
+    const needR = () => { if (!R) fail("I cannot tell if \"" + ctx.rName + "\" is he or she, so I cannot change the pronouns. Please use he/she or a common name."); };
+    const out = [], ol = []; // output tokens, plus lowercase
+    let prevVerb = false, clauseStart = 0, pastNext = false, lastShifted = false;
+    const pastMarker = l.some(x => ["yesterday", "ago", "last"].includes(x)) || l.some(x => /^(19|20)\d\d$/.test(x));
+    const group = k => (k === "I" ? PRN.I : PRN[k]);
+    const speaker = k => R;
+    function mapPronoun(w, i) {
+      const g = x => PRN[x];
+      switch (w) {
+        case "i": needR(); return PRN[R].s;
+        case "me": needR(); return PRN[R].o; case "my": needR(); return PRN[R].p; case "mine": needR(); return PRN[R].pp; case "myself": needR(); return PRN[R].r;
+        case "we": case "us": case "our": case "ours": case "ourselves": {
+          const kk = (R === "I" || R === "we") ? "we" : "they"; const f = { we: "s", us: "o", our: "p", ours: "pp", ourselves: "r" }[w]; return PRN[kk][f];
+        }
+        case "you": case "your": case "yours": case "yourself": case "yourselves": {
+          if (!ctx.lName) fail("Please tell me who the words were said to (e.g. \"said to me\" or \"said to Sita\"), because the quote contains \"" + w + "\".");
+          if (!L) fail("I cannot tell if \"" + ctx.lName + "\" is he or she, so I cannot change \"" + w + "\". Please use him/her or a common name.");
+          const f = w === "you" ? (subjectRole(l, i) ? "s" : "o") : { your: "p", yours: "pp", yourself: "r", yourselves: "r" }[w];
+          let r = PRN[L][f]; if (w === "yourselves") r = L === "they" ? "themselves" : r; return r;
+        }
+      }
+      return null;
+    }
+    const subjOut = () => { // mapped subject right before current verb
+      for (let k = out.length - 1; k >= clauseStart; k--) { const x = ol[k]; if (ADV.has(x) || x === "not") continue; return { k, w: x }; }
+      return null;
+    };
+    const isSing = () => {
+      const sj = subjOut(); if (!sj) return null;
+      const span = ol.slice(clauseStart, sj.k + 1);
+      if (span.includes("and")) return false;
+      if (["i", "he", "she", "it", "this", "that", "everyone", "everybody", "nobody", "someone", "somebody"].includes(sj.w)) return true;
+      if (["we", "you", "they", "these", "those"].includes(sj.w)) return false;
+      if (sj.w === "there" || WH.has(sj.w)) return null;
+      return !plural(span.map((x, i) => out[clauseStart + i]));
+    };
+    const push = (w) => { out.push(w); ol.push(lc(w)); };
+    for (let i = 0; i < t.length; i++) {
+      const w = l[i];
+      if (/^[,;:.!?]$/.test(w)) { push(w); if (w !== ",") { clauseStart = out.length; } prevVerb = false; continue; }
+      if (["if", "when", "while", "because", "that", "and", "but", "or", "as", "than"].includes(w) && w !== "and" && w !== "or" && w !== "but") { push(t[i]); clauseStart = out.length; prevVerb = false; continue; }
+      if (["and", "but", "or"].includes(w)) { push(t[i]); prevVerb = false; conjAfterVerb = lastShifted; continue; }
+      const m = mapPronoun(w, i);
+      if (m) { push(m); prevVerb = false; continue; }
+      const prevL = (() => { for (let k = i - 1; k >= 0; k--) if (!ADV.has(l[k]) && l[k] !== "not") return l[k]; return ""; })();
+      const nextL = (() => { for (let k = i + 1; k < l.length; k++) if (!ADV.has(l[k]) && l[k] !== "not") return l[k]; return ""; })();
+      // be
+      if (BEF.has(w)) {
+        const sg = isSing();
+        if (back) {
+          if (w === "was" || w === "were") push("had been");
+          else { let b = sg === null ? (w === "are" ? "were" : "was") : sg ? "was" : "were"; if (subjOut() && ol[subjOut().k] === "you") b = "were"; push(b); }
+        } else {
+          if (sg === null) push(w);
+          else { const sj = subjOut(); const past = w === "was" || w === "were"; if (sj && sj.w === "i") push(past ? "was" : "am"); else if (sj && sj.w === "you") push(past ? "were" : "are"); else push(sg ? (past ? "was" : "is") : (past ? "were" : "are")); }
+        }
+        prevVerb = true; lastShifted = back; continue;
+      }
+      if (w === "have" || w === "has") {
+        if (back) push("had");
+        else { const sj = subjOut(); const sg = isSing(); push(sg === null ? w : (sj && sj.w === "i") ? "have" : sg ? "has" : "have"); }
+        prevVerb = true; lastShifted = back; continue;
+      }
+      if (w === "had") {
+        if (back && !(isPP(nextL) || nextL === "been" || nextL === "to") ) { push("had had"); } else push("had");
+        prevVerb = true; continue;
+      }
+      if (w === "do" || w === "does") {
+        if (back) { push("did"); } else { const sg = isSing(); push(sg === null ? w : sg ? "does" : "do"); }
+        prevVerb = true; lastShifted = back; continue;
+      }
+      if (w === "did") {
+        if (back) {
+          const mainBase = isBase(nextL) && !["the", "a"].includes(nextL);
+          const k2 = (() => { for (let k = i + 1; k < l.length; k++) { if (l[k] === "not") continue; if (ADV.has(l[k])) continue; return k; } return -1; })();
+          if (k2 > 0 && isBase(l[k2])) { push("had"); t[k2] = ppOf(baseOfAny(l[k2])); l[k2] = lc(t[k2]); skipShift.add(k2); }
+          else { push("had done"); }
+          void mainBase;
+        } else push("did");
+        prevVerb = true; lastShifted = back; continue;
+      }
+      if (MOD.has(w)) {
+        let m2 = w;
+        if (back) m2 = ({ can: "could", will: "would", shall: ctx.question ? "should" : "would", may: "might", must: "had to" })[w] || w;
+        push(m2); prevVerb = true; lastShifted = back; continue;
+      }
+      if (skipShift.has(i)) { push(t[i]); prevVerb = true; continue; }
+      if (w === "used" && nextL === "to") { push(t[i]); prevVerb = true; continue; }
+      const f = finf(w);
+      const verbCtx = f && !isING(w) || (f && isING(w) && false);
+      if (f && !(f.length === 1 && f[0].t === "ing") && !["to"].includes(prevL) && !DET.has(prevL) && !ADJ.has(prevL) && !MOD.has(prevL) && !DOF.has(prevL) && !BEF.has(prevL) && !HAVEF.has(prevL) && prevL !== "been" && prevL !== "be" && (!prevVerb || ["and", "but", "or"].includes(prevL)) && (i > 0 || ctx.allowFirst) && !isCapPlace(t[i], i)) {
+        const hasS = f.find(x => x.t === "s"), hasB = f.find(x => x.t === "base"), hasP = f.find(x => x.t === "past");
+        const b = f[0].b;
+        if (back) {
+          if (["and", "but", "or"].includes(prevL) && !lastShifted) { push(t[i]); prevVerb = true; continue; }
+          if (hasP && !hasB && !hasS) { push("had " + ppOf(b)); }
+          else if (hasP && (hasB || hasS) && ppOf(b) === w && pastOf(b) === w && w === b) { push(pastMarker ? "had " + ppOf(b) : w); }
+          else if (hasS || hasB) { push(pastOf(b)); }
+          else push(t[i]);
+          lastShifted = true;
+        } else {
+          const sg = isSing(); const sj = subjOut();
+          if ((hasS || hasB) && sg !== null && !hasP || (hasS || hasB) && sg !== null && w !== pastOf(b)) { push(sg && !(sj && sj.w === "i") ? sOf(b) : b); } else push(t[i]);
+          lastShifted = false;
+        }
+        prevVerb = true; continue;
+      }
+      push(t[i]); prevVerb = false;
+    }
+    return out;
+  }
+  const skipShift = new Set(); let conjAfterVerb = false;
+  const isCapPlace = (tok, i) => /^[A-Z]/.test(tok) && i > 0;
+
+  function timeWords(s, back) {
+    if (!back) return s.replace(/\bthis\b/gi, m => "this");
+    const R = [[/\blast night\b/gi, "the previous night"], [/\blast (week|month|year)\b/gi, "the previous $1"], [/\bnext (week|month|year)\b/gi, "the following $1"], [/\bthis (morning|evening|afternoon)\b/gi, "that $1"],
+    [/\btonight\b/gi, "that night"], [/\btoday\b/gi, "that day"], [/\byesterday\b/gi, "the day before"], [/\btomorrow\b/gi, "the next day"], [/\bnow\b/gi, "then"], [/\bago\b/gi, "before"], [/\bhere\b/gi, "there"], [/\bthese\b/gi, "those"], [/\bthis\b/gi, "that"], [/\bthus\b/gi, "so"]];
+    R.forEach(([a, b]) => { s = s.replace(a, b); });
+    return s;
+  }
+
+  function toIndirect(input, universal) {
+    try {
+      let s = norm(input);
+      if (!s) fail("Please type a sentence with the spoken words inside double quotes.");
+      const qm = s.match(/"([^"]+)"/);
+      if (!qm) fail("Put the spoken words inside double quotes, e.g. He said, \"I am happy.\"");
+      let quote = qm[1].trim();
+      let repText = (s.slice(0, qm.index) + " " + s.slice(qm.index + qm[0].length)).replace(/[,:;.!?]/g, " ").replace(/\s+/g, " ").trim();
+      if (/"/.test(repText)) fail("Only one quotation can be converted at a time.");
+      const rt = tokenize(repText), rl = rt.map(lc);
+      let vi = rl.findIndex(x => RVFORMS[x]);
+      if (vi < 0) fail("I could not find the reporting verb (said, asked, told ...).");
+      const [rb, rk] = RVFORMS[rl[vi]];
+      let subjT, rest;
+      if (vi === 0) { const e = takeSubject(rt, 1); subjT = rt.slice(1, e); rest = rt.slice(e); }
+      else { subjT = rt.slice(0, vi); rest = rt.slice(vi + 1); }
+      if (!subjT.length) fail("I could not find who spoke.");
+      if (AUXALL.has(lc(subjT[subjT.length - 1]))) fail("Please use a simple reporting verb (said, asked, told ...).");
+      let listenT = [];
+      if (rest.length && lc(rest[0]) === "to") listenT = rest.slice(1);
+      else if (rest.length && LISTENER_VERBS.has(rb)) listenT = rest;
+      else if (rest.length) fail("I did not understand the reporting part: \"" + rest.join(" ") + "\".");
+      const R = personKey(subjT);
+      const Lk = listenT.length ? personKey(listenT) : null;
+
+      const back = rk === "p" && !universal;
+      // quote analysis
+      let q = expand(quote.replace(/[,;:]+$/, ""));
+      const qEnd = (q.match(/[.?!]+$/) || [""])[0];
+      let qt = tokenize(q.replace(/[.?!]+$/, ""));
+      if (!qt.length) fail("The quotation is empty.");
+      let ql = qt.map(lc);
+      const ctx = { R, L: Lk, back, question: false, rName: subjT.join(" "), lName: listenT.join(" ") };
+      const repS = lowerFirstRep(subjT);
+      const reporter = cap(repS.join(" "));
+      const listener = listenT.join(" ");
+      let verbOut, body, kind = "statement";
+      const hasL = listenT.length > 0;
+      // vocative / compound guard
+      if (qt.length > 1 && ql.includes(",") && (NAMES.has(ql[0]) || /^[A-Z]/.test(qt[0]) && qt[0] !== "I" && ql[1] === ",")) fail("Please remove the name (vocative) at the start of the quotation.");
+      const first = ql[0];
+      // greetings
+      if (/^good (morning|afternoon|evening|night)$/.test(ql.slice(0, 2).join(" ")) && ql.length === 2) {
+        if (!hasL) fail("Please tell who was greeted (e.g. \"said to me\").");
+        return ok(cap(join(subjT)) + " " + rvForm("wish", rk) + " " + listener + " " + ql.join(" ") + ".", "greeting");
+      }
+      // interjection
+      const INTJ = { alas: "sorrow", hurrah: "joy", hurray: "joy", bravo: "applause", wow: "surprise" };
+      if (INTJ[first]) {
+        const rest2 = qt.slice(1).filter(x => !/^[.!,]$/.test(x));
+        if (!rest2.length) fail("Nothing follows the exclamation word.");
+        const sh = fixClause(shiftClause(rest2, ctx));
+        return ok(reporter + " " + rvForm("exclaim", rk) + " with " + INTJ[first] + " that " + sh + ".", "exclamation");
+      }
+      if (qEnd === "!" && (first === "what" || first === "how")) fail("\"What ...!\" and \"How ...!\" exclamations need a manual change. Please try a statement, question or command.");
+      // optative
+      if (first === "may" && !ql.includes("?")) {
+        const clause = qt.slice(1);
+        let sub = takeSubject(clause, 0);
+        const st = clause.slice(0, sub).concat(["may"], clause.slice(sub));
+        const sh = fixClause(shiftClause(st, Object.assign({}, ctx, { back: true })));
+        const god = ql.includes("god") || ql.includes("allah");
+        return ok(reporter + " " + rvForm(god ? "pray" : "wish", rk) + " that " + sh.replace(/\bmay\b/, "might") + ".", "wish");
+      }
+      // let us
+      if ((first === "let" && ql[1] === "us") && qEnd !== "?") {
+        const k = (R === "I" || R === "we") ? "we" : "they";
+        const neg = ql[2] === "not";
+        const vrest = qt.slice(neg ? 3 : 2);
+        if (!vrest.length || !isBase(lc(vrest[0]))) fail("Could not understand the suggestion.");
+        const body2 = fixClause(shiftClause(vrest, Object.assign({}, ctx, { back: false })));
+        return ok(reporter + " " + rvForm("suggest", rk) + " that " + PRN[k].s + " should " + (neg ? "not " : "") + timeWords(body2, back) + ".", "suggestion");
+      }
+      // questions
+      const qWord = WH.has(first) && qt.length > 1;
+      const isQ = qEnd.includes("?") || (AUXALL.has(first) && !(first === "do" && ql[1] === "not"));
+      // commands
+      const isCmd = !isQ && (first === "please" || first === "do" && ql[1] === "not" || first === "never" || (isBase(first) && !SUBJP.has(first) && !NAMES.has(first) && findVerbIndex(qt) < 0));
+      if (isCmd) {
+        if (!hasL) fail("Please tell who the command was given to (e.g. \"said to me\" or \"said to Sita\").");
+        let ct = qt.slice(), pl = false, neg = false;
+        if (lc(ct[0]) === "please") { pl = true; ct = ct.slice(1); }
+        if (lc(ct[0]) === "do" && lc(ct[1]) === "not") { neg = true; ct = ct.slice(2); } else if (lc(ct[0]) === "never") { neg = true; ct = ct.slice(1); }
+        if (!ct.length || !isBase(lc(ct[0]))) fail("Could not understand the command.");
+        if (ql.includes("and") || ql.includes(",")) { /* allowed: object lists */ }
+        const body3 = fixClause(shiftClause(ct.map((x, i) => i === 0 ? "to" : x).slice(0, 0).concat(ct), Object.assign({}, ctx, { back: false })));
+        let rv = rb;
+        if (rb === "say" || rb === "tell") rv = pl ? "request" : "tell";
+        else if (pl && (rb === "order" || rb === "command")) rv = "request";
+        const bodyF = timeWords(body3, back);
+        return ok(reporter + " " + rvForm(rv, rk) + " " + listener + " " + (neg ? "not " : "") + "to " + bodyF + ".", "command");
+      }
+      if (isQ) {
+        let rv = (rb === "say" || rb === "tell") ? "ask" : rb;
+        let st, head = [];
+        const cc = Object.assign({}, ctx, { question: true });
+        if (qWord) {
+          let hl = 1;
+          if (["old", "many", "much", "long", "far", "often", "tall", "time", "colour", "kind"].includes(ql[1]) && !AUXALL.has(ql[1])) hl = 2;
+          head = qt.slice(0, hl);
+          const tail = qt.slice(hl), tl = tail.map(lc);
+          let doInvert = tl.length > 1 && AUXALL.has(tl[0]);
+          if (doInvert) {
+            const n1 = tl[1], lastIsDet = tl.length === 2;
+            const nextIsSubj = SUBJP.has(n1) || NAMES.has(n1) || DET.has(n1) && !lastIsDet || ADJ.has(n1) || (/^[A-Z]/.test(tail[1]));
+            const sjAfter = (BEF.has(tl[0]) && isING(n1)) || (HAVEF.has(tl[0]) && isPP(n1) && !SUBJP.has(n1)) || ((MOD.has(tl[0]) || DOF.has(tl[0])) && isBase(n1) && !SUBJP.has(n1) && !DET.has(n1));
+            if (sjAfter && !nextIsSubj) doInvert = false;
+            if (!sjAfter && !nextIsSubj && tl.length > 1 && !DET.has(n1)) { /* e.g. who did this */ }
+            if (DOF.has(tl[0]) && tl.length === 2 && DET.has(n1)) doInvert = false;
+          } else if (tl.length === 1 && AUXALL.has(tl[0])) { doInvert = false; }
+          if (doInvert) {
+            if (tl.includes("not")) fail("Negative questions are not supported.");
+            const e2 = takeSubject(tail, 1);
+            if (e2 <= 1) fail("I could not find the subject of the question.");
+            const subj2 = tail.slice(1, e2), aux = tl[0], after = tail.slice(e2);
+            st = restoreDo(subj2, aux, after, back);
+          } else { st = tail; cc.allowFirst = true; }
+        } else {
+          const e2 = takeSubject(qt, 1);
+          if (e2 <= 1 || ql.includes("not")) fail(ql.includes("not") ? "Negative questions are not supported." : "I could not find the subject of the question.");
+          const subj2 = qt.slice(1, e2), aux = ql[0], after = qt.slice(e2);
+          st = restoreDo(subj2, aux, after, back);
+          head = [/*if*/ ];
+        }
+        const sh = fixClause(shiftClause(st, cc));
+        const lead = qWord ? head.map(lc).join(" ") + " " : (ql.includes("or") ? "whether " : "if ");
+        return ok(reporter + " " + rvForm(rv, rk) + " " + (hasL ? listener + " " : "") + timeWords(lead + sh, back) + ".", "question");
+      }
+      // statement
+      const clauseT = qt;
+      if (findVerbIndex(clauseT) < 0 && !(clauseT.length > 1 && AUXALL.has(lc(clauseT[0])))) fail("I could not recognise a verb in the spoken words. Please use a common verb (or check the spelling).");
+      const sh = fixClause(shiftClause(clauseT, ctx));
+      let rv = rb;
+      if (rb === "say" && hasL) rv = "tell";
+      if (rb === "tell" && !hasL) fail("\"tell\" needs a listener (e.g. \"told me\").");
+      if (back && UNI.test(quote)) { const r0 = { ok: true, info: { type: "statement" }, note: "If this sentence is a universal truth or habitual fact, tick the box \"Universal truth\" - the tense then stays unchanged." }; r0.text = reporter + " " + rvForm(rv, rk) + " " + (hasL ? listener + " " : "") + "that " + timeWords(sh, back) + "."; return r0; }
+      const rep2 = reporter + " " + rvForm(rv, rk) + " " + (hasL ? listener + " " : "") + "that " + timeWords(sh, back) + ".";
+      return ok(rep2, "statement");
+    } catch (e) { if (e instanceof Fail) return { ok: false, msg: e.message }; throw e; }
+  }
+  const ok = (text, kind) => ({ ok: true, text, info: { type: kind } });
+  const UNI = /\b(sun|earth|moon|water|light|sound|honesty|god|nature|ice|gold|stars?|rivers?|wind)\b/i;
+  function lowerFirstRep(arr) { return arr; }
+  function restoreDo(subj, aux, after, back) {
+    // build statement tokens: S + aux + after; for do/does/did remove aux (convert later)
+    if (aux === "do" || aux === "does") return subj.concat(after);
+    if (aux === "did") {
+      const a0 = lc(after[0] || ""); if (!isBase(a0)) fail("Could not find the main verb.");
+      const b = baseOfAny(a0); return subj.concat([pastOf(b)], after.slice(1));
+    }
+    return subj.concat([aux], after);
+  }
+  function fixClause(arr) {
+    let s = join(arr);
+    const w = s.split(" ")[0], l = lc(w);
+    if (w !== "I" && !NAMES.has(l) && (FUNCW.has(l) || NOUNS.has(l) || finf(l) || ADJ.has(l))) s = l + s.slice(w.length);
+    return s;
+  }
+  return { toPassive, toIndirect };
+})();
+if (typeof module !== "undefined") module.exports = GR;
+
+</script>
+<script>
+    // Initial Default Subjects
+    const defaultSubjects = [
+        { id: 1, name: "Gujarati", desc: "First Language" },
+        { id: 2, name: "Sanskrit", desc: "Second Language" },
+        { id: 3, name: "English", desc: "Third Language" },
+        { id: 4, name: "Mathematics", desc: "Algebra & Geometry" },
+        { id: 5, name: "Science", desc: "Physics, Chemistry, Biology" },
+        { id: 6, name: "Social Science", desc: "History, Geography, Civics" }
+    ];
+
+    const mathNiyamData = {
+        1: {
+            title: "પ્રકરણ 1: વાસ્તવિક સંખ્યાઓ (Real Numbers) - નિયમો અને L.C.M./H.C.F. કેલ્ક્યુલેટર",
+            formulas: [
+                { name: "1. HCF અને LCM નો સંબંધ", desc: "HCF(a, b) × LCM(a, b) = a × b" },
+                { name: "2. યુક્લિડનું ભાગ પ્રવિધિ પ્રમેય", desc: "a = bq + r (જ્યાં 0 ≤ r < b)" },
+                { name: "3. અંકગણિતનું મૂળભૂત પ્રમેય", desc: "દરેક વિભાજ્ય સંખ્યાને અવિભાજ્ય અવયવોના ગુણાકાર સ્વરૂપે દર્શાવી શકાય." }
+            ]
+        },
+        2: {
+            title: "પ્રકરણ 2: બહુપદીઓ (Polynomials) - નિયમો અને શૂન્યોનું ઓટોમેટિક કેલ્ક્યુલેટર",
+            formulas: [
+                { name: "1. બહુપદીના પ્રકારો અને વ્યાપક સ્વરૂપ", desc: "• સુરેખ બહુપદી: p(x) = ax + b (a ≠ 0), ઘાત = 1, મહત્તમ 1 શૂન્ય.<br>• દ્વિઘાત બહુપદી: p(x) = ax² + bx + c (a ≠ 0), ઘાત = 2, મહત્તમ 2 શૂન્યો.<br>• ત્રિઘાત બહુપદી: p(x) = ax³ + bx² + cx + d (a ≠ 0), ઘાત = 3, મહત્તમ 3 શૂન્યો." },
+                { name: "2. સુરેખ બહુપદીનું શૂન્ય", desc: "p(x) = ax + b નું શૂન્ય = -b / a = - (અચળ પદ) / (x નો સહગુણક)" },
+                { name: "3. દ્વિઘાત બહુપદીના શૂન્યો અને સહગુણકો વચ્ચેનો સંબંધ", desc: "જો α અને β દ્વિઘાત બહુપદી ax² + bx + c ના શૂન્યો હોય, તો:<br>• <b>શૂન્યોનો સરવાળો (α + β):</b> = -b/a = - (x નો સહગુણક) / (x² નો સહગુણક)<br>• <b>શૂન્યોનો ગુણાકાર (α · β):</b> = c/a = (અચળ પદ) / (x² નો સહગુણક)" },
+                { name: "4. શૂન્યો પરથી દ્વિઘાત બહુપદી મેળવવાનું સૂત્ર", desc: "p(x) = k [x² - (શૂન્યોનો સરવાળો)x + (શૂન્યોનો ગુણાકાર)] = k [x² - (α + β)x + αβ] (જ્યાં k ≠ 0 વાસ્તવિક સંખ્યા છે)" },
+                { name: "5. ત્રિઘાત બહુપદીના સંબંધો", desc: "જો α, β, γ ત્રિઘાત બહુપદી ax³ + bx² + cx + d ના શૂન્યો હોય, તો:<br>• α + β + γ = -b/a<br>• αβ + βγ + γα = c/a<br>• α · β · γ = -d/a" },
+                { name: "6. બહુપદીઓ માટે ભાગ પ્રવિધિ", desc: "p(x) = g(x) × q(x) + r(x), જ્યાં r(x) = 0 અથવા r(x) ની ઘાત < g(x) ની ઘાત." }
+            ]
+        },
+        3: {
+            title: "પ્રકરણ 3: દ્વિચલ સુરેખ સમીકરણયુગ્મ (Pair of Linear Equations in Two Variables) - આદેશ અને લોપની રીત",
+            formulas: [
+                { name: "1. દ્વિચલ સુરેખ સમીકરણયુગ્મનું વ્યાપક સ્વરૂપ", desc: "a₁x + b₁y + c₁ = 0 અને a₂x + b₂y + c₂ = 0 (જ્યાં a₁, b₁, a₂, b₂ અશૂન્ય વાસ્તવિક સંખ્યાઓ છે)." },
+                { name: "2. આદેશની રીત (Substitution Method)", desc: "કોઈપણ એક સમીકરણમાંથી એક ચલની કિંમત બીજા ચલના સ્વરૂપમાં મેળવીને બીજા સમીકરણમાં મૂકવામાં આવે છે." },
+                { name: "3. લોપની રીત (Elimination Method)", desc: "બંને સમીકરણોમાં કોઈપણ એક ચલના સહગુણકો સમાન બનાવીને, સમીકરણોનો સરવાળો કે બાદબાકી કરીને એક ચલનો લોપ કરવામાં આવે છે." }
+            ]
+        },
+        4: {
+            title: "પ્રકરણ 4: દ્વિઘાત સમીકરણ (Quadratic Equations) - વિવેચક અને મૂળનું કેલ્ક્યુલેટર",
+            formulas: [
+                { name: "1. દ્વિઘાત સમીકરણનું વ્યાપક સ્વરૂપ", desc: "ax² + bx + c = 0 (જ્યાં a ≠ 0 અને a, b, c વાસ્તવિક સંખ્યાઓ છે)" },
+                { name: "2. શ્રીધરાચાર્યની રીત (મૂળ મેળવવાનું સૂત્ર)", desc: "x = [-b ± √(b² - 4ac)] / 2a" },
+                { name: "3. વિવેચક (Discriminant)", desc: "D = b² - 4ac" },
+                { name: "4. વિવેચક પરથી મૂળના પ્રકારો (Nature of Roots)", desc: "• જો D &gt; 0 : સમીકરણને બે ભિન્ન વાસ્તવિક મૂળ મળે છે.<br>• જો D = 0 : સમીકરણને બે સમાન વાસ્તવિક મૂળ મળે છે, x = -b/2a.<br>• જો D &lt; 0 : સમીકરણને કોઈ વાસ્તવિક મૂળ મળતાં નથી." }
+            ]
+        },
+        11: {
+            title: "પ્રકરણ 11: વર્તુળોથી સંબંધિત ક્ષેત્રફળ (Areas Related to Circles) - મહત્વના નિયમો",
+            formulas: [
+                { name: "1. વર્તુળનો પરિઘ", desc: "C = 2πr" },
+                { name: "2. વર્તુળનું ક્ષેત્રફળ", desc: "A = πr²" },
+                { name: "3. વૃત્તાંકનું ક્ષેત્રફળ", desc: "ક્ષેત્રફળ = (θ / 360°) × πr²" }
+            ]
+        },
+        14: {
+            title: "પ્રકરણ 14: સંભાવના (Probability) - નિયમો અને ઓટોમેટિક કેલ્ક્યુલેટર",
+            formulas: [
+                { name: "1. સંભાવનાનું સૂત્ર (Classical Definition)", desc: "P(E) = ઘટના E ને અનુકૂળ પરિણામોની સંખ્યા n(E) / કુલ સંભવિત પરિણામોની સંખ્યા n(S)" },
+                { name: "2. સંભાવનાનો વિસ્તાર", desc: "0 ≤ P(E) ≤ 1 (સંભાવના ક્યારેય ઋણ કે 1 થી વધુ હોતી નથી)" },
+                { name: "3. પૂરક ઘટનાનો નિયમ", desc: "P(E) + P(not E) = 1, એટલે કે P(not E) = 1 - P(E)" },
+                { name: "4. અશક્ય અને નિશ્ચિત ઘટના", desc: "• અશક્ય ઘટના (Impossible Event): P(E) = 0<br>• નિશ્ચિત ઘટના (Sure/Certain Event): P(E) = 1" }
+            ]
+        }
+    };
+
+    let currentSubjectId = null;
+    let currentChapterId = null;
+    let currentSubjectName = "";
+    let currentChapterName = "";
+    let db = null;
+    let currentUser = null; // { id, username, name, role: 'admin' | 'user' }
+
+    /* ---------------- SAFE STORAGE (fallback if localStorage/sessionStorage is blocked) ---------------- */
+    const _memoryStore = {};
+    const _memorySession = {};
+    function safeGet(key, isSession = false) {
+        try {
+            return (isSession ? sessionStorage : localStorage).getItem(key);
+        } catch (e) {
+            const store = isSession ? _memorySession : _memoryStore;
+            return Object.prototype.hasOwnProperty.call(store, key) ? store[key] : null;
+        }
+    }
+    function safeSet(key, value, isSession = false) {
+        try {
+            (isSession ? sessionStorage : localStorage).setItem(key, value);
+        } catch (e) {
+            (isSession ? _memorySession : _memoryStore)[key] = value;
+        }
+    }
+    function safeRemove(key, isSession = false) {
+        try {
+            (isSession ? sessionStorage : localStorage).removeItem(key);
+        } catch (e) {
+            delete (isSession ? _memorySession : _memoryStore)[key];
+        }
+    }
+
+    /* ---------------- USER & AUTH MANAGEMENT ---------------- */
+    function getUsers() {
+        const users = safeGet('std10_auth_users');
+        if (!users) {
+            const initialUsers = [
+                { id: 1, username: 'admin', password: 'admin123', name: 'મુખ્ય એડમિન (Admin)', role: 'admin', securityQuestion: 'આ Website કયા ધોરણ (Standard) માટે બનાવેલ છે? (ફક્ત આંકડામાં લખો)', securityAnswer: '10' }
+            ];
+            safeSet('std10_auth_users', JSON.stringify(initialUsers));
+            return initialUsers;
+        }
+        return JSON.parse(users);
+    }
+
+    function saveUsers(users) {
+        safeSet('std10_auth_users', JSON.stringify(users));
+    }
+
+    function checkActiveSession() {
+        const savedSession = safeGet('std10_logged_in_user', true);
+        if (savedSession) {
+            currentUser = JSON.parse(savedSession);
+            updateUIForLoggedInUser();
+        } else {
+            showLoginView();
+        }
+    }
+
+    // MASTER ADMIN KEY — always works, no matter what happens to localStorage/users data.
+    // Username: admin   Password: guru2024
+    const MASTER_ADMIN_USERNAME = 'admin';
+    const MASTER_ADMIN_PASSWORD = 'guru2024';
+
+    function handleLogin(e) {
+        e.preventDefault();
+        try {
+            const uname = document.getElementById('login-username').value.trim();
+            const pass = document.getElementById('login-password').value.trim();
+
+            // 1. Check the hardcoded master admin key first — this ALWAYS works.
+            if (uname.toLowerCase() === MASTER_ADMIN_USERNAME && pass === MASTER_ADMIN_PASSWORD) {
+                currentUser = { id: 1, username: 'admin', name: 'મુખ્ય એડમિન (Admin)', role: 'admin' };
+                safeSet('std10_logged_in_user', JSON.stringify(currentUser), true);
+                document.getElementById('login-form').reset();
+                updateUIForLoggedInUser();
+                return;
+            }
+
+            // 2. Otherwise check the normal stored users list (students, extra admins, etc.)
+            const users = getUsers();
+            const matched = users.find(u => u.username.toLowerCase() === uname.toLowerCase() && u.password === pass);
+
+            if (matched) {
+                currentUser = { id: matched.id, username: matched.username, name: matched.name, role: matched.role };
+                safeSet('std10_logged_in_user', JSON.stringify(currentUser), true);
+                document.getElementById('login-form').reset();
+                updateUIForLoggedInUser();
+            } else {
+                alert("❌ ખોટો યુઝરનેમ અથવા પાસવર્ડ! કૃપા કરીને ફરી પ્રયાસ કરો.");
+            }
+        } catch (err) {
+            console.error('Login error:', err);
+            alert("⚠️ Login માં ટેકનિકલ ભૂલ આવી: " + err.message + "\n\nકૃપા કરીને આ ફાઈલને Chrome/Edge જેવા બ્રાઉઝરમાં ડાયરેક્ટ ખોલો (WhatsApp/File-manager ના preview મોડમાં નહીં).");
+        }
+    }
+
+    function logout() {
+        safeRemove('std10_logged_in_user', true);
+        currentUser = null;
+        currentSubjectId = null;
+        currentChapterId = null;
+        showLoginView();
+    }
+
+    function showLoginView() {
+        document.getElementById('main-header').style.display = 'none';
+        document.getElementById('app-content').style.display = 'none';
+        document.getElementById('login-view').style.display = 'flex';
+    }
+
+    function isAdmin() {
+        return currentUser && currentUser.role === 'admin';
+    }
+
+    function updateUIForLoggedInUser() {
+        document.getElementById('login-view').style.display = 'none';
+        document.getElementById('main-header').style.display = 'flex';
+        document.getElementById('app-content').style.display = 'block';
+
+        document.getElementById('header-user-display').innerText = `👤 ${currentUser.name}`;
+        const badge = document.getElementById('header-role-badge');
+        if (isAdmin()) {
+            badge.innerText = 'Admin (એડમિન)';
+            badge.className = 'user-badge badge-admin';
+            document.getElementById('btn-open-user-mgmt').style.display = 'inline-block';
+        } else {
+            badge.innerText = 'Student (વિદ્યાર્થી)';
+            badge.className = 'user-badge badge-user';
+            document.getElementById('btn-open-user-mgmt').style.display = 'none';
+        }
+
+        renderHome();
+    }
+
+    /* ---------------- ADMIN USER MODAL FUNCTIONS ---------------- */
+    function openUserMgmtModal() {
+        if (!isAdmin()) return;
+        renderUsersList();
+        prefillChangePasswordForm();
+        document.getElementById('user-mgmt-modal').style.display = 'flex';
+    }
+
+    function closeUserMgmtModal() {
+        document.getElementById('user-mgmt-modal').style.display = 'none';
+    }
+
+    function prefillChangePasswordForm() {
+        const users = getUsers();
+        const me = users.find(u => u.id === currentUser.id);
+        document.getElementById('cp-current-password').value = '';
+        document.getElementById('cp-new-password').value = '';
+        document.getElementById('cp-security-question').value = (me && me.securityQuestion) ? me.securityQuestion : '';
+        document.getElementById('cp-security-answer').value = (me && me.securityAnswer) ? me.securityAnswer : '';
+    }
+
+    function handleChangePassword(e) {
+        e.preventDefault();
+        try {
+            const currentPass = document.getElementById('cp-current-password').value.trim();
+            const newPass = document.getElementById('cp-new-password').value.trim();
+            const newQuestion = document.getElementById('cp-security-question').value.trim();
+            const newAnswer = document.getElementById('cp-security-answer').value.trim();
+
+            let users = getUsers();
+            let me = users.find(u => u.id === currentUser.id);
+            if (!me) return;
+
+            if (me.password !== currentPass) {
+                alert("❌ હાલનો પાસવર્ડ ખોટો છે!");
+                return;
+            }
+
+            if (newPass) {
+                me.password = newPass;
+            }
+            me.securityQuestion = newQuestion || '';
+            me.securityAnswer = newAnswer || '';
+
+            saveUsers(users);
+            alert("✅ સફળતાપૂર્વક સેવ થયું! " + (newPass ? "તમારો પાસવર્ડ બદલાઈ ગયો છે." : "તમારો સુરક્ષા પ્રશ્ન અપડેટ થયો છે."));
+            prefillChangePasswordForm();
+        } catch (err) {
+            console.error(err);
+            alert("⚠️ ભૂલ આવી: " + err.message);
+        }
+    }
+
+    /* ---------------- FORGOT PASSWORD ---------------- */
+    let _fpMatchedUserId = null;
+
+    function openForgotPasswordModal() {
+        document.getElementById('fp-username').value = '';
+        document.getElementById('fp-new-password').value = '';
+        document.getElementById('fp-confirm-password').value = '';
+        document.getElementById('fp-step1').style.display = 'block';
+        document.getElementById('fp-step2').style.display = 'none';
+        _fpMatchedUserId = null;
+        document.getElementById('forgot-password-modal').style.display = 'flex';
+    }
+
+    function closeForgotPasswordModal() {
+        document.getElementById('forgot-password-modal').style.display = 'none';
+    }
+
+    function forgotPasswordFindUser() {
+        const uname = document.getElementById('fp-username').value.trim();
+        if (!uname) {
+            alert("કૃપા કરીને Username દાખલ કરો!");
+            return;
+        }
+        const users = getUsers();
+        const user = users.find(u => u.username.toLowerCase() === uname.toLowerCase());
+
+        if (!user) {
+            alert("❌ આ Username ધરાવતો કોઈ યુઝર મળ્યો નથી!");
+            return;
+        }
+
+        _fpMatchedUserId = user.id;
+        document.getElementById('fp-result-name').innerText = `${user.name} (${user.username})`;
+        document.getElementById('fp-result-password').innerText = user.password;
+        document.getElementById('fp-step1').style.display = 'none';
+        document.getElementById('fp-step2').style.display = 'block';
+    }
+
+    function forgotPasswordReset() {
+        if (_fpMatchedUserId === null) return;
+
+        const newPass = document.getElementById('fp-new-password').value.trim();
+        const confirmPass = document.getElementById('fp-confirm-password').value.trim();
+
+        if (!newPass && !confirmPass) {
+            closeForgotPasswordModal();
+            return;
+        }
+
+        let users = getUsers();
+        let user = users.find(u => u.id === _fpMatchedUserId);
+        if (!user) return;
+
+        if (!newPass || newPass.length < 3) {
+            alert("⚠️ કૃપા કરીને ઓછામાં ઓછા 3 અક્ષરનો નવો પાસવર્ડ દાખલ કરો!");
+            return;
+        }
+        if (newPass !== confirmPass) {
+            alert("⚠️ બંને પાસવર્ડ સરખા નથી! ફરી પ્રયાસ કરો.");
+            return;
+        }
+
+        user.password = newPass;
+        saveUsers(users);
+        alert("✅ પાસવર્ડ સફળતાપૂર્વક બદલાઈ ગયો! હવે નવા પાસવર્ડથી લોગિન કરો.");
+        closeForgotPasswordModal();
+    }
+
+    let _editingUserId = null;
+
+    function renderUsersList() {
+        const tbody = document.getElementById('users-table-body');
+        const users = getUsers();
+        tbody.innerHTML = '';
+
+        users.forEach(u => {
+            const tr = document.createElement('tr');
+            const isSelf = u.id === currentUser.id;
+            const isMainAdmin = u.username === 'admin';
+
+            if (_editingUserId === u.id) {
+                tr.innerHTML = `
+                    <td><input type="text" id="eu-name-${u.id}" value="${u.name}" style="width:100%;"></td>
+                    <td><input type="text" id="eu-username-${u.id}" value="${u.username}" style="width:100%;"></td>
+                    <td>
+                        <input type="password" id="eu-password-${u.id}" placeholder="નવો પાસવર્ડ (ખાલી = ના બદલો)" style="width:100%;">
+                        <span class="user-badge ${u.role === 'admin' ? 'badge-admin' : 'badge-user'}" style="margin-top:4px; display:inline-block;">${u.role}</span>
+                    </td>
+                    <td>
+                        <button class="btn-add-user" style="padding:4px 8px;" onclick="saveEditUser(${u.id})">💾 Save</button>
+                        <button class="btn-delete" style="padding:4px 8px;" onclick="cancelEditUser()">Cancel</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+                return;
+            }
+
+            let actionBtns = `<button class="btn-add-user" style="padding:4px 8px;" onclick="startEditUser(${u.id})">✏️ Edit</button>`;
+            if (!(isMainAdmin || isSelf)) {
+                actionBtns += ` <button class="btn-delete" style="padding:4px 8px;" onclick="deleteUser(${u.id})">Delete</button>`;
+            }
+
+            tr.innerHTML = `
+                <td><b>${u.name}</b></td>
+                <td><code>${u.username}</code></td>
+                <td><span class="user-badge ${u.role === 'admin' ? 'badge-admin' : 'badge-user'}">${u.role}</span></td>
+                <td>${actionBtns}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function startEditUser(userId) {
+        _editingUserId = userId;
+        renderUsersList();
+    }
+
+    function cancelEditUser() {
+        _editingUserId = null;
+        renderUsersList();
+    }
+
+    function saveEditUser(userId) {
+        const nameInput = document.getElementById(`eu-name-${userId}`);
+        const usernameInput = document.getElementById(`eu-username-${userId}`);
+        const passwordInput = document.getElementById(`eu-password-${userId}`);
+
+        const newName = nameInput.value.trim();
+        const newUsername = usernameInput.value.trim();
+        const newPassword = passwordInput.value.trim();
+
+        if (!newName || !newUsername) {
+            alert("નામ અને Username ખાલી ન હોવા જોઈએ!");
+            return;
+        }
+
+        let users = getUsers();
+        const duplicate = users.some(u => u.id !== userId && u.username.toLowerCase() === newUsername.toLowerCase());
+        if (duplicate) {
+            alert("આ Username પહેલેથી જ બીજા યુઝર પાસે છે! કૃપા કરીને બીજું Username પસંદ કરો.");
+            return;
+        }
+
+        let user = users.find(u => u.id === userId);
+        if (!user) return;
+
+        user.name = newName;
+        user.username = newUsername;
+        if (newPassword) {
+            user.password = newPassword;
+        }
+
+        saveUsers(users);
+
+        // If the edited user is the currently logged-in user, refresh session info too
+        if (currentUser && currentUser.id === userId) {
+            currentUser.name = newName;
+            currentUser.username = newUsername;
+            safeSet('std10_logged_in_user', JSON.stringify(currentUser), true);
+            document.getElementById('header-user-display').innerText = `👤 ${currentUser.name}`;
+        }
+
+        _editingUserId = null;
+        renderUsersList();
+        alert("✅ યુઝરની વિગતો સફળતાપૂર્વક અપડેટ થઈ ગઈ!" + (newPassword ? " (પાસવર્ડ પણ બદલાયો)" : ""));
+    }
+
+    function handleCreateUser(e) {
+        e.preventDefault();
+        if (!isAdmin()) return;
+
+        const fullName = document.getElementById('new-user-fullname').value.trim();
+        const username = document.getElementById('new-user-name').value.trim();
+        const password = document.getElementById('new-user-password').value.trim();
+
+        if (!fullName || !username || !password) return;
+
+        const users = getUsers();
+        if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+            alert("આ Username ધરાવતો યુઝર પહેલેથી જ અસ્તિત્વમાં છે!");
+            return;
+        }
+
+        const newUser = {
+            id: Date.now(),
+            name: fullName,
+            username: username,
+            password: password,
+            role: 'user'
+        };
+
+        users.push(newUser);
+        saveUsers(users);
+        document.getElementById('add-user-form').reset();
+        renderUsersList();
+        alert(`યુઝર "${fullName}" સફળતાપૂર્વક ઉમેરાઈ ગયો!`);
+    }
+
+    function deleteUser(userId) {
+        if (!isAdmin()) return;
+        if (confirm("શું તમે ખરેખર આ યુઝરને ડિલીટ કરવા માંગો છો?")) {
+            let users = getUsers();
+            users = users.filter(u => u.id !== userId);
+            saveUsers(users);
+            renderUsersList();
+        }
+    }
+
+    /* ---------------- SUBJECTS & CHAPTERS ---------------- */
+    function getSubjects() {
+        const saved = safeGet('std10_subjects');
+        return saved ? JSON.parse(saved) : defaultSubjects;
+    }
+
+    function saveSubjects(subs) {
+        safeSet('std10_subjects', JSON.stringify(subs));
+    }
+
+    function isMathSubject(subName) {
+        return subName.toLowerCase().includes("math");
+    }
+
+    function isEnglishSubject(subName) {
+        return subName.toLowerCase().includes("english");
+    }
+
+    function getChapters(subId, subName) {
+        let allChapters = JSON.parse(safeGet('std10_chapters') || '{}');
+
+        if (!allChapters[subId]) {
+            let count = isMathSubject(subName) ? 15 : 10;
+            allChapters[subId] = [];
+            for (let i = 1; i <= count; i++) {
+                allChapters[subId].push({ id: i, name: `Chapter ${i}` });
+            }
+            safeSet('std10_chapters', JSON.stringify(allChapters));
+        }
+        return allChapters[subId];
+    }
+
+    function renameChapter(event, chapId) {
+        event.stopPropagation();
+        if (!isAdmin()) {
+            alert("માત્ર એડમિન જ પ્રકરણનું નામ બદલી શકે છે!");
+            return;
+        }
+        let allChapters = JSON.parse(safeGet('std10_chapters') || '{}');
+        let list = allChapters[currentSubjectId];
+        if (!list) return;
+        let chap = list.find(c => c.id === chapId);
+        if (!chap) return;
+        let newName = prompt("પ્રકરણનું નવું નામ લખો:", chap.name);
+        if (newName && newName.trim() !== "") {
+            chap.name = newName.trim();
+            safeSet('std10_chapters', JSON.stringify(allChapters));
+            renderChapters();
+        }
+    }
+
+    function initDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open("Std10ChapterPDFDB", 1);
+            request.onerror = (e) => reject("DB error: " + e.target.error);
+            request.onsuccess = (e) => {
+                db = e.target.result;
+                resolve(db);
+            };
+            request.onupgradeneeded = (e) => {
+                const database = e.target.result;
+                let store;
+                if (!database.objectStoreNames.contains("pdfs")) {
+                    store = database.createObjectStore("pdfs", { keyPath: "id", autoIncrement: true });
+                } else {
+                    store = database.transaction.objectStore("pdfs");
+                }
+
+                if (!store.indexNames.contains("chapterKey")) {
+                    store.createIndex("chapterKey", "chapterKey", { unique: false });
+                }
+            };
+        });
+    }
+
+    function renderHome() {
+        const homeView = document.getElementById('home-view');
+        const subjects = getSubjects();
+        
+        homeView.innerHTML = '';
+        subjects.forEach(sub => {
+            const card = document.createElement('div');
+            card.className = 'subject-card';
+
+            let renameBtnHTML = '';
+            if (isAdmin()) {
+                renameBtnHTML = `<button class="rename-sub-btn" onclick="renameSubject(event, ${sub.id})" title="Rename Subject">✏️</button>`;
+            }
+
+            card.innerHTML = `
+                <h3>
+                    <span>${sub.id}. ${sub.name}</span>
+                    ${renameBtnHTML}
+                </h3>
+                <p>${sub.desc}</p>
+            `;
+            card.onclick = (e) => {
+                if (e.target.closest('.rename-sub-btn')) return;
+                openSubject(sub.id, sub.name);
+            };
+            homeView.appendChild(card);
+        });
+
+        document.getElementById('home-view').style.display = 'grid';
+        document.getElementById('subject-view').style.display = 'none';
+        document.getElementById('chapter-view').style.display = 'none';
+    }
+
+    function renameSubject(event, subId) {
+        event.stopPropagation();
+        if (!isAdmin()) {
+            alert("માત્ર એડમિન જ વિષયનું નામ બદલી શકે છે!");
+            return;
+        }
+        let subjects = getSubjects();
+        let sub = subjects.find(s => s.id === subId);
+        let newName = prompt("Enter new name for subject:", sub.name);
+        if (newName && newName.trim() !== "") {
+            sub.name = newName.trim();
+            saveSubjects(subjects);
+            renderHome();
+        }
+    }
+
+    function openSubject(subId, subName) {
+        currentSubjectId = subId;
+        currentSubjectName = subName;
+        document.getElementById('current-subject-title').innerText = subName;
+        
+        const noticeContainer = document.getElementById('notice-container');
+        if (isMathSubject(subName)) {
+            noticeContainer.innerHTML = `<div class="locked-notice">🔒 <b>Mathematics:</b> Chapter 1 (LCM/HCF), Chapter 2 (Polynomials), Chapter 3 (Substitution & Elimination Methods), and Chapter 4 (Quadratic Equations - Discriminant & Roots) have interactive solvers with step-by-step solutions!</div>`;
+        } else {
+            noticeContainer.innerHTML = '';
+        }
+
+        document.getElementById('home-view').style.display = 'none';
+        document.getElementById('subject-view').style.display = 'block';
+        document.getElementById('chapter-view').style.display = 'none';
+        
+        renderChapters();
+    }
+
+    function goHome() {
+        currentSubjectId = null;
+        renderHome();
+    }
+
+    function renderChapters() {
+        const grid = document.getElementById('chapters-grid');
+        const mgmtContainer = document.getElementById('chapter-mgmt-container');
+        const chapters = getChapters(currentSubjectId, currentSubjectName);
+        const canManageChapters = isAdmin() && isEnglishSubject(currentSubjectName);
+
+        if (mgmtContainer) {
+            if (canManageChapters) {
+                mgmtContainer.innerHTML = `
+                    <div class="upload-section" style="margin-bottom: 15px;">
+                        <input type="text" id="new-chapter-name-input" placeholder="નવા પ્રકરણનું નામ (દા.ત. Chapter 11 - Grammar) દાખલ કરો" style="flex:1;">
+                        <button class="upload-btn" onclick="addEnglishChapter()">➕ પ્રકરણ ઉમેરો (Add Chapter)</button>
+                    </div>
+                `;
+            } else {
+                mgmtContainer.innerHTML = '';
+            }
+        }
+
+        grid.innerHTML = '';
+        chapters.forEach(chap => {
+            const card = document.createElement('div');
+            card.className = 'chapter-card';
+            let subtitle = "Click to open PDFs ➔";
+            if (isMathSubject(currentSubjectName) && (chap.id === 1 || chap.id === 2 || chap.id === 3 || chap.id === 4 || chap.id === 11 || chap.id === 14)) {
+                subtitle = "✨ View Niyam, Solver & PDFs ➔";
+            }
+
+            let deleteBtnHTML = '';
+            if (canManageChapters) {
+                deleteBtnHTML = `<button class="rename-sub-btn" onclick="deleteEnglishChapter(event, ${chap.id})" title="Delete Chapter" style="position:absolute; top:8px; right:8px; color:#dc2626;">🗑️</button>`;
+            }
+
+            let renameBtnHTML = '';
+            if (isAdmin()) {
+                let rightOffset = canManageChapters ? '34px' : '8px';
+                renameBtnHTML = `<button class="rename-sub-btn" onclick="renameChapter(event, ${chap.id})" title="Rename Chapter" style="position:absolute; top:8px; right:${rightOffset}; color:#2563eb;">✏️</button>`;
+            }
+
+            card.style.position = 'relative';
+            card.innerHTML = `
+                ${deleteBtnHTML}
+                ${renameBtnHTML}
+                <h4>${chap.name}</h4>
+                <div style="font-size: 0.85rem; color: #64748b; margin-top: 5px;">${subtitle}</div>
+            `;
+            card.onclick = (e) => {
+                if (e.target.closest('.rename-sub-btn')) return;
+                openChapter(chap.id, chap.name);
+            };
+            grid.appendChild(card);
+        });
+    }
+
+    function addEnglishChapter() {
+        if (!isAdmin() || !isEnglishSubject(currentSubjectName)) return;
+        const input = document.getElementById('new-chapter-name-input');
+        if (!input) return;
+        const name = input.value.trim();
+        if (!name) {
+            alert("કૃપા કરીને પ્રકરણનું નામ દાખલ કરો!");
+            return;
+        }
+
+        let allChapters = JSON.parse(safeGet('std10_chapters') || '{}');
+        if (!allChapters[currentSubjectId]) allChapters[currentSubjectId] = [];
+        const newId = Date.now();
+        allChapters[currentSubjectId].push({ id: newId, name: name });
+        safeSet('std10_chapters', JSON.stringify(allChapters));
+
+        input.value = '';
+        renderChapters();
+    }
+
+    function deleteEnglishChapter(event, chapId) {
+        event.stopPropagation();
+        if (!isAdmin() || !isEnglishSubject(currentSubjectName)) return;
+        if (!confirm("શું તમે ખરેખર આ પ્રકરણ ડિલીટ કરવા માંગો છો? તેની બધી અપલોડ થયેલી PDF પણ ડિલીટ થઈ જશે.")) return;
+
+        let allChapters = JSON.parse(safeGet('std10_chapters') || '{}');
+        if (allChapters[currentSubjectId]) {
+            allChapters[currentSubjectId] = allChapters[currentSubjectId].filter(c => c.id !== chapId);
+            safeSet('std10_chapters', JSON.stringify(allChapters));
+        }
+
+        deletePDFsForChapterKey(`${currentSubjectId}_${chapId}`);
+        renderChapters();
+    }
+
+    function deletePDFsForChapterKey(chapterKey) {
+        if (!db) return;
+        try {
+            const tx = db.transaction(["pdfs"], "readwrite");
+            const store = tx.objectStore("pdfs");
+            const index = store.index("chapterKey");
+            const req = index.getAllKeys(chapterKey);
+            req.onsuccess = () => {
+                const keys = req.result || [];
+                keys.forEach(k => store.delete(k));
+            };
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // Mathematical GCD & LCM Functions
+    function gcd2(a, b) {
+        return b === 0 ? a : gcd2(b, a % b);
+    }
+    function lcm2(a, b) {
+        return (a * b) / gcd2(a, b);
+    }
+    function calculateLCM_HCF() {
+        let n1 = parseInt(document.getElementById('num1').value);
+        let n2 = parseInt(document.getElementById('num2').value);
+        let n3Input = document.getElementById('num3').value;
+        let n3 = n3Input.trim() !== "" ? parseInt(n3Input) : null;
+
+        if (isNaN(n1) || isNaN(n2) || (n3Input.trim() !== "" && isNaN(n3))) {
+            alert("કૃપા કરીને માન્ય પૂર્ણાંક સંખ્યાઓ દાખલ કરો!");
+            return;
+        }
+
+        let finalHCF, finalLCM;
+        if (n3 !== null) {
+            finalHCF = gcd2(gcd2(n1, n2), n3);
+            finalLCM = lcm2(lcm2(n1, n2), n3);
+        } else {
+            finalHCF = gcd2(n1, n2);
+            finalLCM = lcm2(n1, n2);
+        }
+
+        document.getElementById('res-hcf').innerText = `ગુ.સા.અ. (HCF): ${finalHCF}`;
+        document.getElementById('res-lcm').innerText = `લ.સા.અ. (LCM): ${finalLCM}`;
+        document.getElementById('res-prod').innerText = `ચકાસણી (HCF × LCM): ${finalHCF * finalLCM}`;
+        
+        document.getElementById('calc-output-box').style.display = 'block';
+    }
+
+    function toFraction(num, den) {
+        if (!den || den === 0) return "અવ્યાખ્યાયિત";
+        if (num === 0) return "0";
+        if (den < 0) { num = -num; den = -den; }
+        let g = gcd2(Math.abs(Math.round(num)), Math.abs(Math.round(den)));
+        let sNum = Math.round(num) / g;
+        let sDen = Math.round(den) / g;
+        if (sDen === 1) return `${sNum}`;
+        return `${sNum}/${sDen}`;
+    }
+
+    // ============================================================
+    // CHAPTER 3: SUBSTITUTION & ELIMINATION SOLVER (બંને રીતો)
+    // ============================================================
+    function setCh3Example(a1, b1, c1, a2, b2, c2) {
+        document.getElementById('ch3-a1').value = a1;
+        document.getElementById('ch3-b1').value = b1;
+        document.getElementById('ch3-c1').value = c1;
+        document.getElementById('ch3-a2').value = a2;
+        document.getElementById('ch3-b2').value = b2;
+        document.getElementById('ch3-c2').value = c2;
+        calculateCh3Equations();
+    }
+
+    function calculateCh3Equations() {
+        let a1 = parseFloat(document.getElementById('ch3-a1').value);
+        let b1 = parseFloat(document.getElementById('ch3-b1').value);
+        let c1 = parseFloat(document.getElementById('ch3-c1').value);
+        let a2 = parseFloat(document.getElementById('ch3-a2').value);
+        let b2 = parseFloat(document.getElementById('ch3-b2').value);
+        let c2 = parseFloat(document.getElementById('ch3-c2').value);
+
+        if (isNaN(a1) || isNaN(b1) || isNaN(c1) || isNaN(a2) || isNaN(b2) || isNaN(c2)) {
+            alert("કૃપા કરીને તમામ સહગુણકો દાખલ કરો!");
+            return;
+        }
+
+        // Standard form: a1*x + b1*y = c1 (Note: c1 is constant on RHS like in example 7x - 15y = 2)
+        // Let's solve using Cramer's rule / general elimination for x and y:
+        // a1*x + b1*y = c1
+        // a2*x + b2*y = c2
+        let denom = (a1 * b2) - (a2 * b1);
+        
+        let subHtml = "";
+        let elimHtml = "";
+
+        if (denom === 0) {
+            let ratio1 = a1 / a2;
+            let ratio2 = b1 / b2;
+            let ratio3 = c1 / c2;
+            let msg = "";
+            if (ratio1 === ratio2 && ratio1 === ratio3) {
+                msg = "સમીકરણયુગ્મને અનંત ઉકેલો છે (સંపాతী રેખાઓ).";
+            } else {
+                msg = "સમીકરણયુગ્મને કોઈ ઉકેલ નથી (સમાંતર રેખાઓ).";
+            }
+            subHtml = `<p style="color:#dc2626;">❌ ${msg}</p>`;
+            elimHtml = `<p style="color:#dc2626;">❌ ${msg}</p>`;
+        } else {
+            // Exact fractional x and y
+            // x = (c1*b2 - c2*b1) / denom
+            // y = (a1*c2 - a2*c1) / denom
+            let xNum = (c1 * b2) - (c2 * b1);
+            let yNum = (a1 * c2) - (a2 * c1);
+            let xVal = toFraction(xNum, denom);
+            let yVal = toFraction(yNum, denom);
+
+            // 1. ADHESH NI RIT (Substitution Method) Step-by-Step explanation
+            // Let's pick equation 2 if possible, or equation 1
+            // e.g. x + 2y = 3 => x = 3 - 2y
+            subHtml = `
+                <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:8px; padding:15px; margin-bottom:12px; line-height:1.8;">
+                    <h4 style="color:#0369a1; margin-top:0;">📝 આદેશની રીત (Substitution Method) - સોપાનો:</h4>
+                    <p><b>సమీకరణో:</b><br>
+                    (1) ${a1}x ${b1 >= 0 ? '+ ' + b1 : '- ' + Math.abs(b1)}y = ${c1}<br>
+                    (2) ${a2}x ${b2 >= 0 ? '+ ' + b2 : '- ' + Math.abs(b2)}y = ${c2}</p>
+                    
+                    <p><b>સોપાન ૧:</b> કોઈપણ એક સમીકરણમાંથી એક ચલની કિંમત બીજા ચલના સ્વરૂપમાં મેળવો.<br>
+                    &nbsp;&nbsp;&nbsp;સમીકરણ (2) પરથી: <b>x = (${c2} ${b2 >= 0 ? '- ' + Math.abs(b2) : '+ ' + Math.abs(b2)}y) / ${a2}</b></p>
+
+                    <p><b>સોપાન ૨:</b> આ કિંમત સમીકરણ (1) માં મૂકતા y ની કિંમત મળે છે:<br>
+                    &nbsp;&nbsp;&nbsp;<b>y = ${yVal}</b></p>
+
+                    <p><b>સોપાન ૩:</b> y ની આ કિંમત સમીકરણમાં મૂકતા x ની કિંમત મળે છે:<br>
+                    &nbsp;&nbsp;&nbsp;<b>x = ${xVal}</b></p>
+
+                    <div style="background:#f0fdf4; border:1px solid #86efac; padding:10px; border-radius:6px; margin-top:8px;">
+                        <p style="color:#14532d; font-weight:600; margin:0;">🎯 ઉકેલ: x = ${xVal}, y = ${yVal} ✔️</p>
+                    </div>
+                </div>
+            `;
+
+            // 2. LOP NI RIT (Elimination Method) Step-by-Step explanation
+            elimHtml = `
+                <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:8px; padding:15px; margin-bottom:12px; line-height:1.8;">
+                    <h4 style="color:#0369a1; margin-top:0;">📝 લોપની રીત (Elimination Method) - સોપાનો:</h4>
+                    <p><b>સમીકરણો:</b><br>
+                    (1) ${a1}x ${b1 >= 0 ? '+ ' + b1 : '- ' + Math.abs(b1)}y = ${c1}<br>
+                    (2) ${a2}x ${b2 >= 0 ? '+ ' + b2 : '- ' + Math.abs(b2)}y = ${c2}</p>
+
+                    <p><b>સોપાન ૧:</b> બંને સમીકરણોમાં કોઈ એક ચલના (ધારો કે y ના) સહગુણકો સમાન બનાવવા માટે યોગ્ય સંખ્યા વડે ગુણાકાર કરો.<br>
+                    &nbsp;&nbsp;&nbsp;સમીકરણ (1) ને <b>${Math.abs(b2)}</b> વડે અને સમીકરણ (2) ને <b>${Math.abs(b1)}</b> વડે ગુણતા.</p>
+
+                    <p><b>સોપાન ૨:</b> એક સમીકરણમાંથી બીજું સમીકરણ બાદ કરતાં y નો લોપ થાય છે.</p>
+
+                    <p><b>સોપાન ૩:</b> x ની કિંમત મળ્યા બાદ તેને સમીકરણમાં મૂકી y ની કિંમત મેળવો.</p>
+
+                    <div style="background:#f0fdf4; border:1px solid #86efac; padding:10px; border-radius:6px; margin-top:8px;">
+                        <p style="color:#14532d; font-weight:600; margin:0;">🎯 ઉકેલ: x = ${xVal}, y = ${yVal} ✔️</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        document.getElementById('ch3-sub-output').innerHTML = subHtml;
+        document.getElementById('ch3-elim-output').innerHTML = elimHtml;
+        document.getElementById('ch3-output-box').style.display = 'block';
+    }
+
+
+    // Polynomials Calculator for Chapter 2
+    function parseQuadratic(str) {
+        if (!str) return null;
+        str = str.replace(/\s+/g, '').toLowerCase();
+        str = str.replace(/²|\^2/g, '^2');
+        let varMatch = str.match(/[a-z]/);
+        let v = varMatch ? varMatch[0] : 'x';
+        if (str[0] !== '+' && str[0] !== '-') str = '+' + str;
+        let terms = str.match(/[+-][^+-]+/g) || [];
+        let a = 0, b = 0, c = 0;
+        terms.forEach(term => {
+            if (term.includes(v + '^2')) {
+                let coef = term.replace(v + '^2', '');
+                if (coef === '+' || coef === '') a += 1;
+                else if (coef === '-') a += -1;
+                else a += parseFloat(coef) || 0;
+            } else if (term.includes(v)) {
+                let coef = term.replace(v, '');
+                if (coef === '+' || coef === '') b += 1;
+                else if (coef === '-') b += -1;
+                else b += parseFloat(coef) || 0;
+            } else {
+                c += parseFloat(term) || 0;
+            }
+        });
+        return { a, b, c };
+    }
+
+    function setPolyExample(expr) {
+        document.getElementById('poly-expr-input').value = expr;
+        calculatePolynomial();
+    }
+
+    function onPolyExprChange() {
+        calculatePolynomial();
+    }
+
+    function onPolyCoeffChange() { /* a, b, c boxes are not used any more - expression box is the only input */ }
+
+    function parseQuadraticStrict(raw) {
+        let str = (raw || '').toLowerCase().replace(/[−–—]/g, '-').replace(/×/g, '*').replace(/\s+/g, '');
+        str = str.replace(/²/g, '^2').replace(/\*/g, '').replace(/=0$/, '');
+        if (!str) return { error: 'કૃપા કરીને બહુપદી લખો (દા.ત. x^2 - 2x - 8).' };
+        if (/[^0-9a-z+\-^.]/.test(str)) return { error: 'ખોટા અક્ષરો છે. ફક્ત સંખ્યા, x, +, - અને ^ વાપરો (દા.ત. 2x^2 + 3x - 5).' };
+        const letters = str.match(/[a-z]/g) || [];
+        const v = letters[0] || 'x';
+        if (letters.some(l => l !== v)) return { error: 'ફક્ત એક જ ચલ (variable) વાપરો, દા.ત. x.' };
+        if (str[0] !== '+' && str[0] !== '-') str = '+' + str;
+        const terms = str.match(/[+-][^+-]+/g);
+        if (!terms || terms.join('') !== str) return { error: 'સમીકરણ બરાબર લખાયું નથી. દા.ત. x^2 - 2x - 8' };
+        let a = 0, b = 0, c = 0;
+        for (const term of terms) {
+            const m = term.match(new RegExp('^([+-])(\\d*\\.?\\d*)(?:' + v + '(?:\\^(\\d+))?)?$'));
+            if (!m) return { error: '"' + term + '" સમજાયું નહીં. દા.ત. x^2 - 2x - 8' };
+            const hasVar = term.includes(v);
+            if (!hasVar && m[2] === '') return { error: 'સમીકરણ બરાબર લખાયું નથી.' };
+            let coef = m[2] === '' ? 1 : parseFloat(m[2]);
+            if (isNaN(coef)) return { error: 'સંખ્યા બરાબર નથી.' };
+            if (m[1] === '-') coef = -coef;
+            const pow = hasVar ? (m[3] === undefined ? 1 : parseInt(m[3], 10)) : 0;
+            if (pow === 2) a += coef; else if (pow === 1) b += coef; else if (pow === 0) c += coef;
+            else return { error: 'આ કેલ્ક્યુલેટર ફક્ત દ્વિઘાત (x² સુધીની) બહુપદી માટે છે.' };
+        }
+        return { a, b, c, v };
+    }
+
+    function calculatePolynomial() {
+        const inp = document.getElementById('poly-expr-input');
+        const out = document.getElementById('poly-results-content');
+        const box = document.getElementById('poly-output-box');
+        if (!inp || !out || !box) return;
+        box.style.display = 'block';
+        const p = parseQuadraticStrict(inp.value);
+        if (p.error) { out.innerHTML = `<p style="color:#991b1b;">⚠️ ${p.error}</p>`; return; }
+        let { a, b, c, v } = p;
+
+        if (a === 0) {
+            if (b === 0) { out.innerHTML = `<p style="color:#991b1b;">⚠️ આ અચળ સંખ્યા છે, તેનું કોઈ શૂન્ય નથી.</p>`; return; }
+            out.innerHTML = `<p>🎯 <b>શૂન્ય (Zero):</b> ${v} = <b>${toFraction(-c, b)}</b></p>`;
+            return;
+        }
+
+        let D = (b * b) - (4 * a * c);
+        let sumFrac = toFraction(-b, a);
+        let prodFrac = toFraction(c, a);
+        let zerosHTML = '';
+
+        if (D < 0) {
+            zerosHTML = `<p style="color:#991b1b;">❌ વિવેચક D = ${D} < 0 હોવાથી વાસ્તવિક શૂન્યો નથી.</p>`;
+        } else {
+            let sqrtD = Math.round(Math.sqrt(D));
+            if (Math.abs(sqrtD * sqrtD - D) < 1e-9) {
+                zerosHTML = `<p>🎯 <b>α = ${toFraction(-b + sqrtD, 2 * a)}, β = ${toFraction(-b - sqrtD, 2 * a)}</b></p>`;
+            } else {
+                let r1 = ((-b + Math.sqrt(D)) / (2 * a)).toFixed(3);
+                let r2 = ((-b - Math.sqrt(D)) / (2 * a)).toFixed(3);
+                zerosHTML = `<p>🎯 <b>α ≈ ${r1}, β ≈ ${r2}</b></p>`;
+            }
+        }
+
+        out.innerHTML = `
+            <p><b>a = ${a}, b = ${b}, c = ${c}</b> &nbsp;|&nbsp; <b>D = b² − 4ac = ${D}</b></p>
+            ${zerosHTML}
+            <p><b>શૂન્યોનો સરવાળો (α + β):</b> ${sumFrac} | <b>ગુણાકાર (α · β):</b> ${prodFrac}</p>
+        `;
+    }
+
+    // ============================================================
+    // CHAPTER 4: QUADRATIC EQUATIONS - વિવેચક (DISCRIMINANT) & મૂળ SOLVER
+    // ============================================================
+    function setCh4Example(a, b, c) {
+        document.getElementById('ch4-a').value = a;
+        document.getElementById('ch4-b').value = b;
+        document.getElementById('ch4-c').value = c;
+        calculateCh4Quadratic();
+    }
+
+    function formatCh4Coeff(val) {
+        // Renders a coefficient value nicely, handling fraction-style inputs like 1/3 already parsed as decimal
+        if (Number.isInteger(val)) return `${val}`;
+        return `${val}`;
+    }
+
+    function calculateCh4Quadratic() {
+        let a = parseFloat(document.getElementById('ch4-a').value);
+        let b = parseFloat(document.getElementById('ch4-b').value);
+        let c = parseFloat(document.getElementById('ch4-c').value);
+
+        if (isNaN(a) || isNaN(b) || isNaN(c)) {
+            alert("કૃપા કરીને a, b અને c ની માન્ય કિંમતો દાખલ કરો!");
+            return;
+        }
+        if (a === 0) {
+            alert("⚠️ a ≠ 0 હોવો જોઈએ, નહીં તો આ દ્વિઘાત સમીકરણ (Quadratic Equation) બનતું નથી!");
+            return;
+        }
+
+        let bSq = b * b;
+        let fourAC = 4 * a * c;
+        let D = bSq - fourAC;
+
+        let bTerm = b >= 0 ? `+ ${b}x` : `- ${Math.abs(b)}x`;
+        let cTerm = c >= 0 ? `+ ${c}` : `- ${Math.abs(c)}`;
+        let aTerm = a === 1 ? 'x²' : (a === -1 ? '-x²' : `${a}x²`);
+
+        let natureHtml = "";
+        let rootsHtml = "";
+
+        if (D > 0) {
+            let sqrtD = Math.sqrt(D);
+            let roundedSqrt = Math.round(sqrtD);
+            natureHtml = `<p style="color:#166534;">✅ D &gt; 0 હોવાથી, સમીકરણને <b>બે ભિન્ન વાસ્તવિક મૂળ</b> મળે છે.</p>`;
+            if (roundedSqrt * roundedSqrt === D) {
+                let x1 = toFraction(-b + roundedSqrt, 2 * a);
+                let x2 = toFraction(-b - roundedSqrt, 2 * a);
+                rootsHtml = `
+                    <p><b>સોપાન ૩:</b> D ના વર્ગમૂળ વડે બંને મૂળ મેળવો:<br>
+                    &nbsp;&nbsp;&nbsp;x = [-b ± √D] / 2a = [-(${b}) ± √${D}] / (2 × ${a}) = [-(${b}) ± ${roundedSqrt}] / ${2 * a}</p>
+                    <div style="background:#f0fdf4; border:1px solid #86efac; padding:10px; border-radius:6px; margin-top:8px;">
+                        <p style="color:#14532d; font-weight:600; margin:0;">🎯 મૂળ: x₁ = ${x1}, x₂ = ${x2} ✔️</p>
+                    </div>
+                `;
+            } else {
+                let x1 = ((-b + sqrtD) / (2 * a)).toFixed(4);
+                let x2 = ((-b - sqrtD) / (2 * a)).toFixed(4);
+                rootsHtml = `
+                    <p><b>સોપાન ૩:</b> D ના વર્ગમૂળ વડે બંને મૂળ મેળવો:<br>
+                    &nbsp;&nbsp;&nbsp;x = [-b ± √D] / 2a = [-(${b}) ± √${D}] / (2 × ${a})</p>
+                    <div style="background:#f0fdf4; border:1px solid #86efac; padding:10px; border-radius:6px; margin-top:8px;">
+                        <p style="color:#14532d; font-weight:600; margin:0;">🎯 મૂળ: x₁ ≈ ${x1}, x₂ ≈ ${x2} ✔️</p>
+                    </div>
+                `;
+            }
+        } else if (D === 0) {
+            let x = toFraction(-b, 2 * a);
+            natureHtml = `<p style="color:#166534;">✅ D = 0 હોવાથી, સમીકરણને <b>બે સમાન વાસ્તવિક મૂળ</b> મળે છે.</p>`;
+            rootsHtml = `
+                <p><b>સોપાન ૩:</b> D = 0 હોવાથી, x = -b / 2a = -(${b}) / (2 × ${a})</p>
+                <div style="background:#f0fdf4; border:1px solid #86efac; padding:10px; border-radius:6px; margin-top:8px;">
+                    <p style="color:#14532d; font-weight:600; margin:0;">🎯 મૂળ: x₁ = x₂ = ${x} ✔️</p>
+                </div>
+            `;
+        } else {
+            natureHtml = `<p style="color:#991b1b;">❌ D &lt; 0 હોવાથી, સમીકરણને <b>કોઈ વાસ્તવિક મૂળ</b> મળતાં નથી.</p>`;
+            rootsHtml = `
+                <div style="background:#fef2f2; border:1px solid #fca5a5; padding:10px; border-radius:6px; margin-top:8px;">
+                    <p style="color:#991b1b; font-weight:600; margin:0;">🎯 કોઈ વાસ્તવિક મૂળ અસ્તિત્વમાં નથી.</p>
+                </div>
+            `;
+        }
+
+        let html = `
+            <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:8px; padding:15px; margin-bottom:12px; line-height:1.8;">
+                <h4 style="color:#0369a1; margin-top:0;">📝 વિવેચક (Discriminant) અને મૂળ - સોપાનો:</h4>
+                <p><b>સમીકરણ:</b> ${aTerm} ${bTerm} ${cTerm} = 0 &nbsp; (a = ${a}, b = ${b}, c = ${c})</p>
+
+                <p><b>સોપાન ૧:</b> વિવેચકનું સૂત્ર લખો: D = b² - 4ac</p>
+
+                <p><b>સોપાન ૨:</b> કિંમતો મૂકીને ગણતરી કરો:<br>
+                &nbsp;&nbsp;&nbsp;D = (${b})² - 4 × (${a}) × (${c}) = ${bSq} - ${fourAC} = <b>${D}</b></p>
+
+                ${natureHtml}
+                ${rootsHtml}
+            </div>
+        `;
+
+        document.getElementById('ch4-output-content').innerHTML = html;
+        document.getElementById('ch4-output-box').style.display = 'block';
+    }
+
+
+    // ============================================================
+    // CHAPTER 11: AREAS RELATED TO CIRCLES - AUTO CALCULATOR
+    // (કોઈપણ એક કિંમત નાખો, બાકીની આપોઆપ ગણાય)
+    // ============================================================
+    function ch11FillAll(r, sourceId) {
+        if (isNaN(r) || r <= 0) {
+            ch11ClearAll();
+            return;
+        }
+        let d = 2 * r;
+        let c = 2 * Math.PI * r;
+        let a = Math.PI * r * r;
+
+        if (sourceId !== 'ch11-r') document.getElementById('ch11-r').value = parseFloat(r.toFixed(4));
+        if (sourceId !== 'ch11-d') document.getElementById('ch11-d').value = parseFloat(d.toFixed(4));
+        if (sourceId !== 'ch11-c') document.getElementById('ch11-c').value = parseFloat(c.toFixed(4));
+        if (sourceId !== 'ch11-a') document.getElementById('ch11-a').value = parseFloat(a.toFixed(4));
+
+        let html = `
+            <p><b>ત્રિજ્યા (r) = ${r.toFixed(4)}</b> નો ઉપયોગ કરીને બાકીની કિંમતો:</p>
+            <p>• <b>વ્યાસ:</b> d = 2r = 2 × ${r.toFixed(4)} = <b>${d.toFixed(4)}</b></p>
+            <p>• <b>પરિઘ:</b> C = 2πr = 2 × π × ${r.toFixed(4)} = <b>${c.toFixed(4)}</b></p>
+            <p>• <b>ક્ષેત્રફળ:</b> A = πr² = π × (${r.toFixed(4)})² = <b>${a.toFixed(4)}</b></p>
+        `;
+        document.getElementById('ch11-output-content').innerHTML = html;
+        document.getElementById('ch11-output-box').style.display = 'block';
+    }
+
+    function ch11FromRadius() {
+        let r = parseFloat(document.getElementById('ch11-r').value);
+        if (isNaN(r) || r <= 0) { ch11ClearAll(); return; }
+        ch11FillAll(r, 'ch11-r');
+    }
+
+    function ch11FromDiameter() {
+        let d = parseFloat(document.getElementById('ch11-d').value);
+        if (isNaN(d) || d <= 0) { ch11ClearAll(); return; }
+        ch11FillAll(d / 2, 'ch11-d');
+    }
+
+    function ch11FromCircumference() {
+        let c = parseFloat(document.getElementById('ch11-c').value);
+        if (isNaN(c) || c <= 0) { ch11ClearAll(); return; }
+        ch11FillAll(c / (2 * Math.PI), 'ch11-c');
+    }
+
+    function ch11FromArea() {
+        let a = parseFloat(document.getElementById('ch11-a').value);
+        if (isNaN(a) || a <= 0) { ch11ClearAll(); return; }
+        ch11FillAll(Math.sqrt(a / Math.PI), 'ch11-a');
+    }
+
+    function ch11ClearAll() {
+        ['ch11-r', 'ch11-d', 'ch11-c', 'ch11-a'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        const box = document.getElementById('ch11-output-box');
+        if (box) box.style.display = 'none';
+    }
+
+    function ch11SectorCalculate() {
+        let r = parseFloat(document.getElementById('ch11-sec-r').value);
+        let theta = parseFloat(document.getElementById('ch11-sec-theta').value);
+        const box = document.getElementById('ch11-sec-output-box');
+
+        if (isNaN(r) || isNaN(theta) || r <= 0 || theta <= 0) {
+            if (box) box.style.display = 'none';
+            return;
+        }
+
+        let sectorArea = (theta / 360) * Math.PI * r * r;
+        let arcLength = (theta / 360) * 2 * Math.PI * r;
+
+        let html = `
+            <p><b>ત્રિજ્યા (r) = ${r}, ખૂણો (θ) = ${theta}°</b></p>
+            <p>• <b>વૃત્તાંશનું ક્ષેત્રફળ:</b> (θ/360°) × πr² = (${theta}/360) × π × ${r}² = <b>${sectorArea.toFixed(4)}</b></p>
+            <p>• <b>ચાપની લંબાઈ (Arc Length):</b> (θ/360°) × 2πr = (${theta}/360) × 2 × π × ${r} = <b>${arcLength.toFixed(4)}</b></p>
+        `;
+        document.getElementById('ch11-sec-output-content').innerHTML = html;
+        if (box) box.style.display = 'block';
+    }
+
+
+    // ============================================================
+    // CHAPTER 14: સંભાવના (PROBABILITY) - AUTO CALCULATOR
+    // ============================================================
+    function ch14Calculate() {
+        let favorable = parseFloat(document.getElementById('ch14-favorable').value);
+        let total = parseFloat(document.getElementById('ch14-total').value);
+        const box = document.getElementById('ch14-output-box');
+
+        if (isNaN(favorable) || isNaN(total) || box === null) {
+            if (box) box.style.display = 'none';
+            return;
+        }
+
+        if (total <= 0 || favorable < 0) {
+            document.getElementById('ch14-output-content').innerHTML =
+                `<p style="color:#dc2626;">❌ n(S) એ 0 થી મોટી અને n(E) એ ઋણ ના હોવી જોઈએ!</p>`;
+            box.style.display = 'block';
+            return;
+        }
+
+        if (favorable > total) {
+            document.getElementById('ch14-output-content').innerHTML =
+                `<p style="color:#dc2626;">❌ અનુકૂળ પરિણામો n(E), કુલ પરિણામો n(S) કરતાં વધુ ના હોઈ શકે!</p>`;
+            box.style.display = 'block';
+            return;
+        }
+
+        let pFrac = toFraction(favorable, total);
+        let pDecimal = (favorable / total);
+        let notFavorable = total - favorable;
+        let notFrac = toFraction(notFavorable, total);
+
+        let html = `
+            <p><b>સોપાન ૧:</b> સૂત્ર લખો: P(E) = n(E) / n(S)</p>
+            <p><b>સોપાન ૨:</b> કિંમતો મૂકો: P(E) = ${favorable} / ${total} = <b>${pFrac}</b> ≈ ${pDecimal.toFixed(4)}</p>
+            <div style="background:#f0fdf4; border:1px solid #86efac; padding:10px; border-radius:6px; margin-top:8px;">
+                <p style="color:#14532d; font-weight:600; margin:0;">🎯 P(E) = ${pFrac} ✔️</p>
+            </div>
+            <p style="margin-top:12px;"><b>પૂરક ઘટના (Complementary Event):</b> P(not E) = 1 - P(E) = 1 - ${pFrac} = <b>${notFrac}</b></p>
+        `;
+        document.getElementById('ch14-output-content').innerHTML = html;
+        box.style.display = 'block';
+    }
+
+    function ch14ClearAll() {
+        ['ch14-favorable', 'ch14-total'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        const box = document.getElementById('ch14-output-box');
+        if (box) box.style.display = 'none';
+    }
+
+
+    // ============================================================
+    // PDF FUNCTIONS
+    // ============================================================
+    function makeChapterKey() {
+        return String(currentSubjectId) + "_" + String(currentChapterId);
+    }
+
+    function showChapterMessage(message, isError = false) {
+        const list = document.getElementById("pdf-list");
+        if (!list) return;
+        list.innerHTML = `<tr><td colspan="2" style="padding:18px; text-align:center; color:${isError ? "#dc2626" : "#64748b"};">${message}</td></tr>`;
+    }
+
+    async function loadPDFs() {
+        const list = document.getElementById("pdf-list");
+        if (!list || !db) return;
+
+        try {
+            const chapterKey = makeChapterKey();
+            const pdfs = await new Promise((resolve, reject) => {
+                const tx = db.transaction(["pdfs"], "readonly");
+                const store = tx.objectStore("pdfs");
+                const index = store.index("chapterKey");
+                const request = index.getAll(chapterKey);
+                request.onsuccess = () => resolve(request.result || []);
+                request.onerror = () => reject(request.error);
+            });
+
+            list.innerHTML = "";
+            if (pdfs.length === 0) {
+                showChapterMessage("📂 આ પ્રકરણ માટે હાલમાં કોઈ PDF અપલોડ થયેલી નથી.");
+                return;
+            }
+
+            pdfs.forEach(pdf => {
+                const row = document.createElement("tr");
+                const nameCell = document.createElement("td");
+                nameCell.style.padding = "12px";
+                nameCell.textContent = pdf.name;
+
+                const actionCell = document.createElement("td");
+                actionCell.style.padding = "12px";
+
+                const openBtn = document.createElement("button");
+                openBtn.className = "btn-header";
+                openBtn.style.cssText = "background:#e0f2fe;color:#0369a1;margin-right:6px;";
+                openBtn.textContent = "📖 Open PDF";
+                openBtn.onclick = () => openPDF(pdf.id);
+
+                const downloadBtn = document.createElement("button");
+                downloadBtn.className = "btn-header";
+                downloadBtn.style.cssText = "background:#ecfdf5;color:#047857;margin-right:6px;";
+                downloadBtn.textContent = "⬇️ Download";
+                downloadBtn.onclick = () => downloadPDF(pdf.id);
+
+                actionCell.appendChild(openBtn);
+                actionCell.appendChild(downloadBtn);
+
+                if (isAdmin()) {
+                    const deleteBtn = document.createElement("button");
+                    deleteBtn.className = "btn-delete";
+                    deleteBtn.textContent = "🗑️ Delete";
+                    deleteBtn.onclick = () => deletePDF(pdf.id);
+                    actionCell.appendChild(deleteBtn);
+                }
+
+                row.appendChild(nameCell);
+                row.appendChild(actionCell);
+                list.appendChild(row);
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function uploadPDF() {
+        if (!isAdmin() || !db) return;
+        const input = document.getElementById("pdf-file-input");
+        if (!input || !input.files || input.files.length === 0) return;
+        const file = input.files[0];
+
+        try {
+            await new Promise((resolve, reject) => {
+                const tx = db.transaction(["pdfs"], "readwrite");
+                const store = tx.objectStore("pdfs");
+                const request = store.add({
+                    chapterKey: makeChapterKey(),
+                    subjectId: currentSubjectId,
+                    chapterId: currentChapterId,
+                    subjectName: currentSubjectName,
+                    chapterName: currentChapterName,
+                    name: file.name,
+                    blob: file,
+                    uploadedAt: Date.now()
+                });
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+            input.value = "";
+            alert("✅ PDF સફળતાપૂર્વક upload થઈ ગઈ.");
+            await loadPDFs();
+        } catch (error) {
+            alert("❌ PDF upload થઈ શકી નથી.");
+        }
+    }
+
+    async function getPDFById(pdfId) {
+        return await new Promise((resolve, reject) => {
+            const tx = db.transaction(["pdfs"], "readonly");
+            const store = tx.objectStore("pdfs");
+            const request = store.get(pdfId);
+            request.onsuccess = () => resolve(request.result || null);
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    async function openPDF(pdfId) {
+        const pdf = await getPDFById(pdfId);
+        if (!pdf) return;
+        const url = URL.createObjectURL(pdf.blob);
+        window.open(url, "_blank");
+    }
+
+    async function downloadPDF(pdfId) {
+        const pdf = await getPDFById(pdfId);
+        if (!pdf) return;
+        const url = URL.createObjectURL(pdf.blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = pdf.name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    }
+
+    async function deletePDF(pdfId) {
+        if (!isAdmin() || !confirm("શું તમે આ PDF delete કરવા માંગો છો?")) return;
+        const tx = db.transaction(["pdfs"], "readwrite");
+        tx.objectStore("pdfs").delete(pdfId);
+        await loadPDFs();
+    }
+
+    function goBackToChapters() {
+        document.getElementById("chapter-view").style.display = "none";
+        document.getElementById("subject-view").style.display = "block";
+        renderChapters();
+    }
+
+
+    /* ---------------- ENGLISH GRAMMAR TOOLS UI ---------------- */
+    function grEsc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    let _grTimer = null;
+    function grLater(kind) { clearTimeout(_grTimer); _grTimer = setTimeout(() => grRun(kind), 250); }
+    function grRun(kind) {
+        const out = document.getElementById(kind === 'active' ? 'gr-active-out' : 'gr-direct-out');
+        const inp = document.getElementById(kind === 'active' ? 'gr-active-in' : 'gr-direct-in');
+        if (!out || !inp) return;
+        const text = inp.value.trim();
+        if (!text) { out.innerHTML = ''; return; }
+        let r;
+        try {
+            r = kind === 'active' ? GR.toPassive(text) : GR.toIndirect(text, document.getElementById('gr-universal').checked);
+        } catch (e) { r = { ok: false, msg: 'Something went wrong. Please try a simpler sentence.' }; }
+        if (!r.ok) {
+            out.innerHTML = `<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;color:#92400e;">⚠️ ${grEsc(r.msg)}<br><small>(ખોટો જવાબ આપવા કરતાં હું અટકી જાઉં છું - વાક્ય સરળ કરીને ફરી પ્રયત્ન કરો.)</small></div>`;
+            return;
+        }
+        let extra = '';
+        if (kind === 'active' && r.info) extra = `<div style="font-size:0.82rem;color:#475569;margin-top:6px;">Subject: <b>${grEsc(r.info.subject)}</b> · Verb: <b>${grEsc(r.info.verb)}</b> · Object: <b>${grEsc(r.info.object)}</b></div>`;
+        if (r.note) extra += `<div style="font-size:0.82rem;color:#92400e;margin-top:6px;">ℹ️ ${grEsc(r.note)}</div>`;
+        out.innerHTML = `<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 12px;"><span style="font-size:0.8rem;color:#166534;">${kind === 'active' ? 'Passive Voice' : 'Indirect Speech'}:</span><div style="font-size:1.1rem;font-weight:600;color:#14532d;">${grEsc(r.text)}</div>${extra}</div>`;
+    }
+    function grExample(kind, text) {
+        const inp = document.getElementById(kind === 'active' ? 'gr-active-in' : 'gr-direct-in');
+        inp.value = text; grRun(kind);
+    }
+    function grammarToolsHTML() {
+        const chip = (k, t) => `<button type="button" class="calc-btn" style="padding:4px 9px;font-size:0.8rem;margin:2px;" onclick='grExample("${k}", ${JSON.stringify(t).replace(/'/g, "&#39;")})'>${grEsc(t)}</button>`;
+        return `
+        <div class="calc-box" style="margin-bottom:20px;">
+            <h3>🔁 Active Voice ➜ Passive Voice (Auto)</h3>
+            <p style="color:#64748b;font-size:0.9rem;margin-top:0;">Active voice nu vakya lakho - Passive voice aapoaap thai jashe. Questions (Did he...? / Who wrote...?) ane commands (Close the door.) pan chale chhe.</p>
+            <input type="text" id="gr-active-in" placeholder="e.g. She writes a letter." style="padding:8px;width:100%;box-sizing:border-box;margin-bottom:8px;" oninput="grLater('active')" onkeydown="if(event.key==='Enter'){grRun('active');}">
+            <div>${chip('active', 'The boy broke the window.')}${chip('active', 'They are building a house.')}${chip('active', 'Who wrote this letter?')}${chip('active', 'Do not touch the wire.')}</div>
+            <div id="gr-active-out" style="margin-top:10px;"></div>
+        </div>
+        <div class="calc-box" style="margin-bottom:25px;">
+            <h3>💬 Direct Speech ➜ Indirect Speech (Auto)</h3>
+            <p style="color:#64748b;font-size:0.9rem;margin-top:0;">Bolelo bhag <b>double quotes " "</b> ma lakho. Example: He said to me, "I am happy."</p>
+            <input type="text" id="gr-direct-in" placeholder='e.g. She said to me, "I like mangoes."' style="padding:8px;width:100%;box-sizing:border-box;margin-bottom:8px;" oninput="grLater('direct')" onkeydown="if(event.key==='Enter'){grRun('direct');}">
+            <label style="font-size:0.9rem;display:block;margin-bottom:8px;"><input type="checkbox" id="gr-universal" onchange="grRun('direct')"> Universal truth / habitual fact (tense na badlo)</label>
+            <div>${chip('direct', 'He said, "I am happy."')}${chip('direct', 'Sita said to Ram, "Where do you live?"')}${chip('direct', 'The teacher said to the boys, "Do not make a noise."')}${chip('direct', 'He said to me, "I will go there tomorrow."')}</div>
+            <div id="gr-direct-out" style="margin-top:10px;"></div>
+        </div>`;
+    }
+
+    function openChapter(chapId, chapName) {
+        currentChapterId = chapId;
+        currentChapterName = chapName;
+        document.getElementById('current-chapter-title').innerText = `${currentSubjectName} > ${chapName}`;
+        
+        const contentContainer = document.getElementById('dynamic-chapter-content');
+        let extraHeaderHTML = '';
+
+        if (isMathSubject(currentSubjectName) && mathNiyamData[chapId]) {
+            let data = mathNiyamData[chapId];
+            let formulasHTML = '';
+            data.formulas.forEach(f => {
+                formulasHTML += `<div class="formula-box"><h4>${f.name}</h4><p>${f.desc}</p></div>`;
+            });
+
+            let extraToolHTML = '';
+            
+            // Chapter 1 Tool
+            if (chapId === 1) {
+                extraToolHTML = `
+                    <div class="calc-box">
+                        <h3>🧮 L.C.M. અને H.C.F. કેલ્ક્યુલેટર</h3>
+                        <div class="calc-inputs">
+                            <input type="number" id="num1" placeholder="સંખ્યા 1">
+                            <input type="number" id="num2" placeholder="સંખ્યા 2">
+                            <input type="number" id="num3" placeholder="સંખ્યા 3">
+                            <button class="calc-btn" onclick="calculateLCM_HCF()">ગણતરી કરો</button>
+                        </div>
+                        <div id="calc-output-box" class="calc-results">
+                            <h4>પરિણામ:</h4>
+                            <p id="res-hcf"></p><p id="res-lcm"></p><p id="res-prod"></p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Chapter 2 Tool
+            if (chapId === 2) {
+                extraToolHTML = `
+                    <div class="calc-box">
+                        <h3>📐 બહુપદીના શૂન્યો અને સંબંધનું કેલ્ક્યુલેટર</h3>
+                        <div style="margin-bottom: 12px;">
+                            <input type="text" id="poly-expr-input" value="x^2 - 2x - 8" placeholder="દા.ત. x^2 - 2x - 8" style="padding:8px; width:220px;" oninput="calculatePolynomial()" onkeydown="if(event.key==='Enter'){calculatePolynomial();}">
+                            <button class="calc-btn" onclick="calculatePolynomial()">ગણતરી કરો</button>
+                        </div>
+                        <div id="poly-output-box" class="calc-results">
+                            <h4>ઉકેલ:</h4>
+                            <div id="poly-results-content"></div>
+                        </div>
+                    </div>
+                `;
+                setTimeout(calculatePolynomial, 0);
+            }
+
+            // Chapter 3 Tool (આદેશ અને લોપની રીત - Substitution & Elimination)
+            if (chapId === 3) {
+                extraToolHTML = `
+                    <div class="calc-box">
+                        <h3>⚖️ દ્વિચલ સુરેખ સમીકરણયુગ્મ ઉકેલનાર (આદેશ અને લોપની રીત)</h3>
+                        <p style="color: #64748b; font-size: 0.95rem;">પાઠ્યપુસ્તકના ઉદાહરણો અથવા તમારા પોતાના સમીકરણો દાખલ કરો:</p>
+                        
+                        <div style="margin-bottom: 15px; display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="btn-header" style="background:#e0f2fe; color:#0369a1;" onclick="setCh3Example(7, -15, 2, 1, 2, 3)">ઉદાહરણ ૪ (આદેશની રીત)</button>
+                            <button class="btn-header" style="background:#e0f2fe; color:#0369a1;" onclick="setCh3Example(9, -4, 2000, 7, -3, 2000)">ઉદાહરણ (લોપની રીત)</button>
+                        </div>
+
+                        <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:15px;">
+                            <p style="margin:0 0 10px 0; font-weight:600;">સમીકરણ ૧: a₁x + b₁y = c₁</p>
+                            <div class="calc-inputs" style="margin-top:0;">
+                                <input type="number" id="ch3-a1" value="7" placeholder="a₁"> x + 
+                                <input type="number" id="ch3-b1" value="-15" placeholder="b₁"> y = 
+                                <input type="number" id="ch3-c1" value="2" placeholder="c₁">
+                            </div>
+
+                            <p style="margin:15px 0 10px 0; font-weight:600;">સમીકરણ ૨: a₂x + b₂y = c₂</p>
+                            <div class="calc-inputs" style="margin-top:0;">
+                                <input type="number" id="ch3-a2" value="1" placeholder="a₂"> x + 
+                                <input type="number" id="ch3-b2" value="2" placeholder="b₂"> y = 
+                                <input type="number" id="ch3-c2" value="3" placeholder="c₂">
+                            </div>
+
+                            <button class="calc-btn" style="margin-top:15px;" onclick="calculateCh3Equations()">🔍 બંને રીતે ઉકેલ મેળવો (Calculate)</button>
+                        </div>
+
+                        <div id="ch3-output-box" style="display:none;">
+                            <div id="ch3-sub-output"></div>
+                            <div id="ch3-elim-output"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Chapter 4 Tool (દ્વિઘાત સમીકરણ - વિવેચક અને મૂળનું કેલ્ક્યુલેટર)
+            if (chapId === 4) {
+                extraToolHTML = `
+                    <div class="calc-box">
+                        <h3>🧮 વિવેચક (Discriminant) અને મૂળનું કેલ્ક્યુલેટર</h3>
+                        <p style="color: #64748b; font-size: 0.95rem;">તમારું પોતાનું દ્વિઘાત સમીકરણ ax² + bx + c = 0 ના સહગુણકો દાખલ કરો, અથવા ઉદાહરણ અજમાવો:</p>
+
+                        <div style="margin-bottom: 15px; display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="btn-header" style="background:#e0f2fe; color:#0369a1;" onclick="setCh4Example(3, -2, 0.333333)">ઉદાહરણ ૯ (D &lt; 0)</button>
+                            <button class="btn-header" style="background:#e0f2fe; color:#0369a1;" onclick="setCh4Example(2, -3, 1)">ઉદાહરણ (D &gt; 0)</button>
+                            <button class="btn-header" style="background:#e0f2fe; color:#0369a1;" onclick="setCh4Example(1, -4, 4)">ઉદાહરણ (D = 0)</button>
+                        </div>
+
+                        <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:15px;">
+                            <p style="margin:0 0 10px 0; font-weight:600;">સમીકરણ: a x² + b x + c = 0</p>
+                            <div class="calc-inputs" style="margin-top:0;">
+                                <input type="number" id="ch4-a" value="1" placeholder="a" step="any"> x² + 
+                                <input type="number" id="ch4-b" value="0" placeholder="b" step="any"> x + 
+                                <input type="number" id="ch4-c" value="0" placeholder="c" step="any"> = 0
+                            </div>
+
+                            <button class="calc-btn" style="margin-top:15px;" onclick="calculateCh4Quadratic()">🔍 વિવેચક અને મૂળ શોધો (Calculate)</button>
+                        </div>
+
+                        <div id="ch4-output-box" style="display:none;">
+                            <div id="ch4-output-content"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Chapter 11 Tool (વર્તુળોથી સંબંધિત ક્ષેત્રફળ - Auto Calculator)
+            if (chapId === 11) {
+                extraToolHTML = `
+                    <div class="calc-box">
+                        <h3>🧮 વર્તુળ કેલ્ક્યુલેટર (ત્રિજ્યા / વ્યાસ / પરિઘ / ક્ષેત્રફળ)</h3>
+                        <p style="color: #64748b; font-size: 0.95rem;">નીચેનામાંથી <b>કોઈપણ એક</b> કિંમત ટાઈપ કરો — બાકીની બધી કિંમતો આપોઆપ (auto) ગણાઈને આવી જશે:</p>
+
+                        <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:15px;">
+                            <div class="calc-inputs" style="justify-content:flex-start;">
+                                <label style="font-weight:600; min-width:110px;">ત્રિજ્યા (r):</label>
+                                <input type="number" id="ch11-r" placeholder="r" step="any" oninput="ch11FromRadius()">
+                            </div>
+                            <div class="calc-inputs" style="justify-content:flex-start;">
+                                <label style="font-weight:600; min-width:110px;">વ્યાસ (d):</label>
+                                <input type="number" id="ch11-d" placeholder="d" step="any" oninput="ch11FromDiameter()">
+                            </div>
+                            <div class="calc-inputs" style="justify-content:flex-start;">
+                                <label style="font-weight:600; min-width:110px;">પરિઘ (C):</label>
+                                <input type="number" id="ch11-c" placeholder="C" step="any" oninput="ch11FromCircumference()">
+                            </div>
+                            <div class="calc-inputs" style="justify-content:flex-start;">
+                                <label style="font-weight:600; min-width:110px;">ક્ષેત્રફળ (A):</label>
+                                <input type="number" id="ch11-a" placeholder="A" step="any" oninput="ch11FromArea()">
+                            </div>
+                            <button class="calc-btn" style="margin-top:10px;" onclick="ch11ClearAll()">🔄 Clear (ફરી શરૂ કરો)</button>
+                        </div>
+
+                        <div id="ch11-output-box" class="calc-results">
+                            <h4>ગણતરીના સોપાનો:</h4>
+                            <div id="ch11-output-content"></div>
+                        </div>
+
+                        <h3 style="margin-top:30px;">🍕 વૃત્તાંશ કેલ્ક્યુલેટર (Sector Area & Arc Length)</h3>
+                        <p style="color: #64748b; font-size: 0.95rem;">ત્રિજ્યા (r) અને કેન્દ્રીય ખૂણો (θ) નાખો — વૃત્તાંશનું ક્ષેત્રફળ અને ચાપની લંબાઈ આપોઆપ મળશે:</p>
+                        <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:15px;">
+                            <div class="calc-inputs" style="justify-content:flex-start;">
+                                <label style="font-weight:600; min-width:150px;">ત્રિજ્યા (r):</label>
+                                <input type="number" id="ch11-sec-r" placeholder="r" step="any" oninput="ch11SectorCalculate()">
+                            </div>
+                            <div class="calc-inputs" style="justify-content:flex-start;">
+                                <label style="font-weight:600; min-width:150px;">કેન્દ્રીય ખૂણો (θ°):</label>
+                                <input type="number" id="ch11-sec-theta" placeholder="θ" step="any" oninput="ch11SectorCalculate()">
+                            </div>
+                        </div>
+
+                        <div id="ch11-sec-output-box" class="calc-results">
+                            <h4>ગણતરીના સોપાનો:</h4>
+                            <div id="ch11-sec-output-content"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Chapter 14 Tool (સંભાવના - Probability Auto Calculator)
+            if (chapId === 14) {
+                extraToolHTML = `
+                    <div class="calc-box">
+                        <h3>🎲 સંભાવના (Probability) કેલ્ક્યુલેટર</h3>
+                        <p style="color: #64748b; font-size: 0.95rem;">અનુકૂળ પરિણામોની સંખ્યા n(E) અને કુલ સંભવિત પરિણામોની સંખ્યા n(S) નાખો — જવાબ આપોઆપ (auto) મળી જશે:</p>
+
+                        <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:15px;">
+                            <div class="calc-inputs" style="justify-content:flex-start;">
+                                <label style="font-weight:600; min-width:230px;">અનુકૂળ પરિણામોની સંખ્યા n(E):</label>
+                                <input type="number" id="ch14-favorable" placeholder="દા.ત. 3" min="0" step="any" oninput="ch14Calculate()">
+                            </div>
+                            <div class="calc-inputs" style="justify-content:flex-start;">
+                                <label style="font-weight:600; min-width:230px;">કુલ સંભવિત પરિણામોની સંખ્યા n(S):</label>
+                                <input type="number" id="ch14-total" placeholder="દા.ત. 6" min="0" step="any" oninput="ch14Calculate()">
+                            </div>
+                            <button class="calc-btn" style="margin-top:10px;" onclick="ch14ClearAll()">🔄 Clear (ફરી શરૂ કરો)</button>
+                        </div>
+
+                        <div id="ch14-output-box" class="calc-results">
+                            <h4>ગણતરીના સોપાનો:</h4>
+                            <div id="ch14-output-content"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            extraHeaderHTML = `
+                <div class="niyam-container" style="margin-bottom: 25px;">
+                    <h3>${data.title}</h3>
+                    <div style="margin-top: 20px;">${formulasHTML}</div>
+                    ${extraToolHTML}
+                </div>
+            `;
+        }
+
+
+        if (isEnglishSubject(currentSubjectName)) { extraHeaderHTML = grammarToolsHTML(); }
+
+        let uploadHTML = isAdmin() ? `
+            <div class="upload-section">
+                <input type="file" id="pdf-file-input" accept="application/pdf">
+                <button class="upload-btn" onclick="uploadPDF()">📤 Upload PDF</button>
+            </div>
+        ` : `
+            <div class="student-readonly-banner">
+                📖 <b>વિદ્યાર્થી મોડ:</b> તમે પ્રકરણની PDF ખોલીને વાંચી શકો છો.
+            </div>
+        `;
+
+        contentContainer.innerHTML = `
+            ${extraHeaderHTML}
+            ${uploadHTML}
+            <h3>📚 પ્રકરણની ઉપલબ્ધ PDFs</h3>
+            <table>
+                <thead><tr><th>PDF ફાઈલનું નામ</th><th style="width: 220px;">ક્રિયા</th></tr></thead>
+                <tbody id="pdf-list"></tbody>
+            </table>
+        `;
+        loadPDFs();
+
+        document.getElementById('subject-view').style.display = 'none';
+        document.getElementById('chapter-view').style.display = 'block';
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+        try { await initDB(); } catch (e) { console.error(e); }
+        checkActiveSession();
+    });
+</script>
+</body>
+</html>
